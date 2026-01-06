@@ -10,9 +10,10 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: true, // or set your frontend domain: ["https://askstellarai.com", "http://localhost:5173"]
+  origin: ["http://localhost:5174", "https://askainurse.com"],
   credentials: true,
 }));
+
 
 app.use(express.json({ limit: "50kb" }));
 

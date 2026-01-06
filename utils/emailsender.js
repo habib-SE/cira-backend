@@ -81,18 +81,13 @@ Origin: ${meta.origin || "-"}
 
   const html = `
     <div style="font-family: Arial, sans-serif; line-height: 1.5">
-    //   <h2 style="margin: 0 0 12px;">New demo lead</h2>
+
       <table cellpadding="6" cellspacing="0" style="border-collapse: collapse;">
         <tr><td><b>Email</b></td><td>${escapeHtml(email)}</td></tr>
         <tr><td><b>Phone</b></td><td>${escapeHtml(phone)}</td></tr>
         <tr><td><b>Created</b></td><td>${escapeHtml(createdAt)}</td></tr>
       </table>
-    //   <h3 style="margin: 18px 0 8px;">Meta</h3>
-    //   <ul style="margin: 0; padding-left: 18px;">
-    //     <li><b>IP:</b> ${escapeHtml(meta.ip || "-")}</li>
-    //     <li><b>User-Agent:</b> ${escapeHtml(meta.ua || "-")}</li>
-    //     <li><b>Origin:</b> ${escapeHtml(meta.origin || "-")}</li>
-    //   </ul>
+   
     </div>
   `;
 
