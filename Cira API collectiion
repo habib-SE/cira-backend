@@ -1,0 +1,1812 @@
+{
+  "info": {
+    "_postman_id": "701b5f82-e502-40f2-9c82-7d14578f5a8f",
+    "name": "Cira API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39774590",
+    "_collection_link": "https://go.postman.co/collection/27653636-701b5f82-e502-40f2-9c82-7d14578f5a8f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"shahabhamdani@hotmail.com\",\r\n  \"password\": \"Shah#12\",\r\n  \"type\": \"admin\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"shahabhamdani@hotmail.com\",\r\n  \"password\": \"Shah#12\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Login successful.\",\r\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example.jwt.token.here\",\r\n  \"user\": {\r\n    \"id\": \"b4f7c2a1-9d5e-4b2c-a3f1-92d1e1e9f2ab\",\r\n    \"firstName\": \"Shahab\",\r\n    \"lastName\": \"Hamdani\",\r\n    \"email\": \"shahabhamdani@hotmail.com\",\r\n    \"role\": \"admin\",\r\n    \"phone\": \"1234567890\",\r\n    \"dateOfBirth\": \"1995-06-15\",\r\n    \"isVerified\": true,\r\n    \"lastLoginAt\": \"2025-10-27T09:10:45.000Z\"\r\n  }\r\n}\r\n"
+            }
+          ]
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"shahabhamdani@hotmail.com\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/forgot-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "forgot-password"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Forgot Password",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"shahabhamdani@hotmail.com\"\r\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/forgot-password",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "forgot-password"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n  \"status\": true,\r\n  \"message\": \"If an account exists for that email, a reset link has been sent.\",\r\n  \"expiresInMinutes\": 30,\r\n  \"requestId\": \"req_9f2b1a7c1b\"\r\n}\r\n"
+            }
+          ]
+        },
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"Shahab\",\r\n  \"lastName\": \"Hamdani\",\r\n  \"email\": \"shahabhamdani@hotmail.com\",\r\n  \"password\": \"Shah#12\",\r\n  \"confirmPassword\": \"Shah#12\",\r\n  \"type\": \"admin\",\r\n  \"phone\": \"1234567890\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/signup",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Signup",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"firstName\": \"Shahab\",\r\n  \"lastName\": \"Hamdani\",\r\n  \"email\": \"shahabhamdani@hotmail.com\",\r\n  \"password\": \"Shah#12\",\r\n  \"confirmPassword\": \"Shah#12\",\r\n  \"type\": \"admin\",\r\n  \"phone\": \"1234567890\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/signup",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "signup"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "",
+              "header": [],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "verify-otp",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"shahabhamdani@hotmail.com\",\r\n  \"otp\": \"482193\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/verify-otp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "verify-otp"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "verify-otp",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"shahabhamdani@hotmail.com\",\r\n  \"otp\": \"482193\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/verify-otp",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "verify-otp"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "",
+              "header": [],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Account verified successfully.\",\r\n  \"user\": {\r\n    \"id\": \"b4f7c2a1-9d5e-4b2c-a3f1-92d1e1e9f2ab\",\r\n    \"firstName\": \"Shahab\",\r\n    \"lastName\": \"Hamdani\",\r\n    \"email\": \"shahabhamdani@hotmail.com\",\r\n    \"role\": \"admin\",\r\n    \"phone\": \"1234567890\",\r\n    \"dateOfBirth\": \"1995-06-15\",\r\n    \"isVerified\": true,\r\n    \"verifiedAt\": \"2025-10-27T09:22:10.000Z\"\r\n  },\r\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example.jwt.token.here\"\r\n}\r\n"
+            }
+          ]
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwiaWF0IjoxNzM2NzE4ODU0LCJleHAiOjE3MzY3MjI0NTR9.yKtQ_emMHTW5s7dNQzNUTLAZ5-TEf7r__QRaY_kRDIM\",\r\n  \"newPassword\": \"Shah#12\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/change-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "change-password"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Reset Password",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n   \"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwiaWF0IjoxNzM2NzE4ODU0LCJleHAiOjE3MzY3MjI0NTR9.yKtQ_emMHTW5s7dNQzNUTLAZ5-TEf7r__QRaY_kRDIM\",\r\n  \"newPassword\": \"Shah#12\"\r\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/change-password",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "change-password"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n  \"status\": true,\r\n  \"message\": \"Password updated successfully. You can now sign in.\",\r\n  \"user\": {\r\n    \"id\": 1,\r\n    \"email\": \"shaha********@hotmail.com\"\r\n  },\r\n  \"lastPasswordChangeAt\": \"2025-11-04T11:00:00Z\",\r\n  \"session\": {\r\n    \"activeSessionsInvalidated\": true,\r\n    \"mustReauthenticate\": true\r\n  }\r\n}\r\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "get-metrics",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/get-metrics",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "get-metrics"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-metrics",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": ""
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/admin/get-metrics",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "get-metrics"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Dashboard summary fetched successfully\",\r\n  \"data\": {\r\n    \"cards\": {\r\n      \"totalCompanies\": 128,\r\n      \"totalPartners\": 46,\r\n      \"totalConsultations\": 932,\r\n      \"totalDoctorsReferred\": 214\r\n    },\r\n    \"chart\": {\r\n      \"type\": \"2d_line\",\r\n      \"xAxisKey\": \"month\",\r\n      \"series\": [\r\n        { \"key\": \"consultations\", \"label\": \"Consultations\" },\r\n        { \"key\": \"doctorsReferred\", \"label\": \"Doctors Referred\" }\r\n      ],\r\n      \"points\": [\r\n        { \"month\": \"2025-02\", \"consultations\": 58, \"doctorsReferred\": 12 },\r\n        { \"month\": \"2025-03\", \"consultations\": 64, \"doctorsReferred\": 14 },\r\n        { \"month\": \"2025-04\", \"consultations\": 71, \"doctorsReferred\": 16 },\r\n        { \"month\": \"2025-05\", \"consultations\": 76, \"doctorsReferred\": 18 },\r\n        { \"month\": \"2025-06\", \"consultations\": 80, \"doctorsReferred\": 17 },\r\n        { \"month\": \"2025-07\", \"consultations\": 83, \"doctorsReferred\": 19 },\r\n        { \"month\": \"2025-08\", \"consultations\": 79, \"doctorsReferred\": 20 },\r\n        { \"month\": \"2025-09\", \"consultations\": 77, \"doctorsReferred\": 18 },\r\n        { \"month\": \"2025-10\", \"consultations\": 82, \"doctorsReferred\": 17 },\r\n        { \"month\": \"2025-11\", \"consultations\": 88, \"doctorsReferred\": 21 },\r\n        { \"month\": \"2025-12\", \"consultations\": 93, \"doctorsReferred\": 22 },\r\n        { \"month\": \"2026-01\", \"consultations\": 81, \"doctorsReferred\": 20 }\r\n      ]\r\n    }\r\n  }\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Companies",
+          "item": [
+            {
+              "name": "create-company",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"company_image\": \"base64datastring\",  \r\n  \"company_name\": \"BluePeak Technologies\",\r\n  \"person_name\": \"Sarah Wilson\",\r\n  \"email\": \"sarah.wilson@bluepeak.com\",\r\n  \"phone\": \"+923065949602\",\r\n  \"password\": \"****\",\r\n  \"status\": \"Active\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/create-company",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "create-company"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "create-company",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"companyName\": \"BluePeak Technologies\",\r\n  \"name\": \"Sarah Wilson\",\r\n  \"email\": \"sarah.wilson@bluepeak.com\",\r\n  \"employees\": 120,\r\n  \"code\": \"BP-2026\",\r\n  \"status\": \"Active\"\r\n}\r\n",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Company created successfully\",\r\n  \"data\": {\r\n    \"id\": 101,\r\n    \"company_image\": \"base64datastring\",\r\n    \"company_name\": \"BluePeak Technologies\",\r\n    \"person_name\": \"Sarah Wilson\",\r\n    \"email\": \"sarah.wilson@bluepeak.com\",\r\n    \"phone\": \"+923065949602\",\r\n    \"status\": \"Active\",\r\n    \"created_at\": \"2026-01-29T10:15:30+05:00\",\r\n    \"updated_at\": \"2026-01-29T10:15:30+05:00\"\r\n  }\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "update-company",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"company_image\": \"base64datastring\",  \r\n  \"company_name\": \"BluePeak Technologies\",\r\n  \"person_name\": \"Sarah Wilson\",\r\n  \"email\": \"sarah.wilson@bluepeak.com\",\r\n  \"phone\": \"+923065949602\",\r\n  \"password\": \"****\",\r\n  \"status\": \"Active\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/update-company/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "update-company",
+                    "1"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "update-company",
+                  "originalRequest": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"company_image\": \"base64datastring\",  \r\n  \"company_name\": \"BluePeak Technologies\",\r\n  \"person_name\": \"Sarah Wilson\",\r\n  \"email\": \"sarah.wilson@bluepeak.com\",\r\n  \"phone\": \"+923065949602\",\r\n  \"password\": \"****\",\r\n  \"status\": \"Active\"\r\n}\r\n",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Company updated successfully\",\r\n  \"data\": {\r\n    \"id\": 101,\r\n    \"company_image\": \"base64datastring\",\r\n    \"company_name\": \"BluePeak Technologies\",\r\n    \"person_name\": \"Sarah Wilson\",\r\n    \"email\": \"sarah.wilson@bluepeak.com\",\r\n    \"phone\": \"+923065949602\",\r\n    \"status\": \"Active\",\r\n    \"created_at\": \"2026-01-10T14:22:11+05:00\",\r\n    \"updated_at\": \"2026-01-29T11:05:44+05:00\"\r\n  }\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "get-all-companies",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/get-all-companies",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "get-all-companies"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-all-companies",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": []
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Companies fetched successfully\",\r\n  \"data\": [\r\n    {\r\n      \"id\": 101,\r\n      \"code\": \"CMP-000101\",\r\n      \"company_image\": \"base64datastring\",\r\n      \"company_name\": \"BluePeak Technologies\",\r\n      \"person_name\": \"Sarah Wilson\",\r\n      \"email\": \"sarah.wilson@bluepeak.com\",\r\n      \"phone\": \"+923065949602\",\r\n      \"status\": \"Active\",\r\n      \"created_at\": \"2026-01-10T14:22:11+05:00\",\r\n      \"updated_at\": \"2026-01-29T11:05:44+05:00\"\r\n    },\r\n    {\r\n      \"id\": 102,\r\n      \"code\": \"CMP-000102\",\r\n      \"company_image\": \"base64datastring\",\r\n      \"company_name\": \"NovaBridge Pvt Ltd\",\r\n      \"person_name\": \"Ali Raza\",\r\n      \"email\": \"ali.raza@novabridge.com\",\r\n      \"phone\": \"+923001112233\",\r\n      \"status\": \"Inactive\",\r\n      \"created_at\": \"2026-01-12T09:40:00+05:00\",\r\n      \"updated_at\": \"2026-01-20T18:12:30+05:00\"\r\n    }\r\n  ],\r\n  \"total\": 2\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "get-company",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/get-comapny/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "get-comapny",
+                    "1"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-company",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": []
+                  },
+                  "_postman_previewlanguage": null,
+                  "header": null,
+                  "cookie": [],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Company fetched successfully\",\r\n  \"data\": {\r\n    \"id\": 101,\r\n    \"code\": \"CMP-000101\",\r\n    \"company_image\": \"base64datastring\",\r\n    \"company_name\": \"BluePeak Technologies\",\r\n    \"person_name\": \"Sarah Wilson\",\r\n    \"email\": \"sarah.wilson@bluepeak.com\",\r\n    \"phone\": \"+923065949602\",\r\n    \"status\": \"Active\",\r\n    \"created_at\": \"2026-01-10T14:22:11+05:00\",\r\n    \"updated_at\": \"2026-01-29T11:05:44+05:00\"\r\n  }\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "delete-company",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/delete-company/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "delete-company",
+                    "1"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "delete-company",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/admin/delete-company/1",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "delete-company",
+                        "1"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": null,
+                  "header": null,
+                  "cookie": [],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Company deleted successfully\",\r\n  \"data\": {\r\n    \"id\": 101,\r\n    \"deleted\": true\r\n  }\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Partners",
+          "item": [
+            {
+              "name": "delete-partner",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/admin/delete-appointment/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "delete-appointment",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "delete-partner",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/admin/delete-partner/1",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "delete-partner",
+                        "1"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Partner deleted successfully\",\r\n  \"data\": {\r\n    \"id\": 1,\r\n    \"deleted\": true\r\n  }\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "update-partner",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"partner_name\": \"XYZ\",\r\n  \"person_name\": \"Admin User\",\r\n  \"email\": \"admin@cira.com\",\r\n  \"phone\": \"+92 300 1234567\",\r\n  \"password\": \"Partner#123\",\r\n  \"status\": \"Active\",\r\n  \"branding\": {\r\n    \"primaryColor\": \"#FF0000\",\r\n    \"secondaryColor\": \"#00FFFF\"\r\n  },\r\n  \"partner_image\": \"base64datastring\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/update-partner/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "update-partner",
+                    "1"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "update-partner",
+                  "originalRequest": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"partner_name\": \"XYZ\",\r\n  \"person_name\": \"Admin User\",\r\n  \"email\": \"admin@cira.com\",\r\n  \"phone\": \"+92 300 1234567\",\r\n  \"password\": \"Partner#123\",\r\n  \"status\": \"Active\",\r\n  \"branding\": {\r\n    \"primaryColor\": \"#FF0000\",\r\n    \"secondaryColor\": \"#00FFFF\"\r\n  },\r\n  \"partner_image\": \"base64datastring\"\r\n}\r\n",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/admin/update-partner/1",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "update-partner",
+                        "1"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Partner updated successfully.\",\r\n  \"partner\": {\r\n    \"id\": 7,\r\n    \"partner_name\": \"XYZ Updated\",\r\n    \"person_name\": \"Admin User\",\r\n    \"email\": \"admin@cira.com\",\r\n    \"phone\": \"+92 300 9998888\",\r\n    \"status\": \"Active\",\r\n    \"branding\": {\r\n      \"primaryColor\": \"#E500AC\",\r\n      \"secondaryColor\": \"#00B69B\"\r\n    },\r\n    \"partner_image\": \"https://cdn.yoursite.com/partners/xyz.png\",\r\n    \"createdAt\": \"2026-01-28T10:30:00.000Z\",\r\n    \"updatedAt\": \"2026-01-28T10:50:00.000Z\"\r\n  }\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "create-partner",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"partner_name\": \"XYZ\",\r\n  \"person_name\": \"Admin User\",\r\n  \"email\": \"admin@cira.com\",\r\n  \"phone\": \"+92 300 1234567\",\r\n  \"password\": \"Partner#123\",\r\n  \"status\": \"Active\",\r\n  \"branding\": {\r\n    \"primaryColor\": \"#FF0000\",\r\n    \"secondaryColor\": \"#00FFFF\"\r\n  },\r\n  \"partner_image\": \"base64datastring\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/admin/create-partner",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "create-partner"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "create-partner",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"partner_name\": \"XYZ\",\r\n  \"person_name\": \"Admin User\",\r\n  \"email\": \"admin@cira.com\",\r\n  \"phone\": \"+92 300 1234567\",\r\n  \"password\": \"Partner#123\",\r\n  \"status\": \"Active\",\r\n  \"branding\": {\r\n    \"primaryColor\": \"#FF0000\",\r\n    \"secondaryColor\": \"#00FFFF\"\r\n  },\r\n  \"partner_image\": \"base64datastring\"\r\n}\r\n",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/admin/create-partner",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "create-partner"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Partner created successfully.\",\r\n  \"partner\": {\r\n    \"id\": 7,\r\n    \"partner_name\": \"XYZ\",\r\n    \"person_name\": \"Admin User\",\r\n    \"email\": \"admin@cira.com\",\r\n    \"phone\": \"+92 300 1234567\",\r\n    \"status\": \"Active\",\r\n    \"branding\": {\r\n      \"primaryColor\": \"#FF0000\",\r\n      \"secondaryColor\": \"#00FFFF\"\r\n    },\r\n    \"partner_image\": \"base64datastring\",\r\n    \"createdAt\": \"2026-01-28T10:30:00.000Z\",\r\n    \"updatedAt\": \"2026-01-28T10:30:00.000Z\"\r\n  }\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "get-all-partners",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/admin/get-all-partners",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "get-all-partners"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-all-partners",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/admin/get-all-partners",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "get-all-partners"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "\r\n{\r\n  \"success\": true,\r\n  \"message\": \"Partners fetched successfully\",\r\n  \"data\": [\r\n    {\r\n      \"id\": 7,\r\n    \"partner_name\": \"XYZ\",\r\n    \"person_name\": \"Admin User\",\r\n    \"email\": \"admin@cira.com\",\r\n    \"phone\": \"+92 300 1234567\",\r\n    \"status\": \"Active\",\r\n    \"branding\": {\r\n      \"primaryColor\": \"#FF0000\",\r\n      \"secondaryColor\": \"#00FFFF\"\r\n    },\r\n    \"partner_image\": \"base64datastring\",\r\n    \"createdAt\": \"2026-01-28T10:30:00.000Z\",\r\n    \"updatedAt\": \"2026-01-28T10:30:00.000Z\"\r\n    },\r\n    {\r\n    \"id\": 8,\r\n    \"partner_name\": \"XYZ\",\r\n    \"person_name\": \"Admin User\",\r\n    \"email\": \"admin@cira.com\",\r\n    \"phone\": \"+92 300 1234567\",\r\n    \"status\": \"Active\",\r\n    \"branding\": {\r\n      \"primaryColor\": \"#FF0000\",\r\n      \"secondaryColor\": \"#00FFFF\"\r\n    },\r\n    \"partner_image\": \"base64datastring\",\r\n    \"createdAt\": \"2026-01-28T10:30:00.000Z\",\r\n    \"updatedAt\": \"2026-01-28T10:30:00.000Z\"\r\n    }\r\n  ],\r\n  \"total\": 2\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "get-partner",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/admin/get-partner/7",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "get-partner",
+                    "7"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-partner",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/admin/get-partner/7",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "get-partner",
+                        "7"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "\r\n{\r\n  \"success\": true,\r\n  \"message\": \"Partners fetched successfully\",\r\n    \"Partner\":{\r\n    \"id\": 7,\r\n    \"partner_name\": \"XYZ\",\r\n    \"person_name\": \"Admin User\",\r\n    \"email\": \"admin@cira.com\",\r\n    \"phone\": \"+92 300 1234567\",\r\n    \"status\": \"Active\",\r\n    \"branding\": {\r\n      \"primaryColor\": \"#FF0000\",\r\n      \"secondaryColor\": \"#00FFFF\"\r\n    },\r\n    \"partner_image\": \"base64datastring\",\r\n    \"createdAt\": \"2026-01-28T10:30:00.000Z\",\r\n    \"updatedAt\": \"2026-01-28T10:30:00.000Z\"\r\n    },\r\n       }\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Consultations",
+          "item": [
+            {
+              "name": "get-all-consultations",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/admin/get-all-consultations",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "get-all-consultations"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-all-consultations",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/admin/get-all-consultations",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "get-all-consultations"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Consultations fetched successfully.\",\r\n  \"consultations\": [\r\n    {\r\n      \"id\": 2,\r\n      \"consultationCode\": \"000\",\r\n      \"name\": \"Jane Doe\",\r\n      \"age\": 29,\r\n      \"date\": \"2026-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    },\r\n    {\r\n      \"id\": 3,\r\n      \"consultationCode\": \"000\",\r\n      \"name\": \"Jane Doe\",\r\n      \"age\": 29,\r\n      \"date\": \"2026-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    }\r\n  ]\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Doctors Referrd",
+          "item": [
+            {
+              "name": "get-doctors-referred",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/admin/get-all-doctors-referred",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "get-all-doctors-referred"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-doctors-referred",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/admin/get-all-doctors-referred",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "get-all-doctors-referred"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Doctor referrals fetched successfully.\",\r\n  \"referrals\": [\r\n    {\r\n      \"id\": 0,\r\n      \"referralCode\": \"000\",\r\n      \"referredTo\": \"Dr Jane Doe\",\r\n      \"platform\": \"Air Doctor\",\r\n      \"country\": \"Mexico\",\r\n      \"date\": \"2019-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    },\r\n     {\r\n      \"id\": 2,\r\n      \"referralCode\": \"000\",\r\n      \"referredTo\": \"Dr Jane Doe\",\r\n      \"platform\": \"Air Doctor\",\r\n      \"country\": \"Mexico\",\r\n      \"date\": \"2019-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    }\r\n  ]\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Company Panel",
+      "item": [
+        {
+          "name": "Employees",
+          "item": [
+            {
+              "name": "get-all-employees",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/company/get-all-employees",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company",
+                    "get-all-employees"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-all-employees",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "_postman_previewlanguage": null,
+                  "header": null,
+                  "cookie": [],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Employees fetched successfully\",\r\n  \"data\": [\r\n    {\r\n      \"id\": 1,\r\n      \"employee_name\": \"Sarah Wilson\",\r\n      \"email\": \"sarah.wilson@email.com\",\r\n      \"status\": \"Active\",\r\n      \"company_id\": \"c12345\",\r\n      \"employee_image\": \"base64datastring\",\r\n      \"created_at\": \"2026-01-10T14:22:11+05:00\",\r\n      \"updated_at\": \"2026-01-29T11:05:44+05:00\"\r\n    },\r\n    {\r\n      \"id\": 102,\r\n      \"employee_name\": \"Sarah Wilson\",\r\n      \"email\": \"sarah.wilson@email.com\",\r\n      \"status\": \"Active\",\r\n      \"company_id\": \"c12345\",\r\n      \"employee_image\": \"base64datastring\",\r\n      \"created_at\": \"2026-01-12T09:40:00+05:00\",\r\n      \"updated_at\": \"2026-01-20T18:12:30+05:00\"\r\n    }\r\n  ],\r\n  \"total\": 2\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "delete-employee",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/company/delete-employee/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company",
+                    "delete-employee",
+                    "1"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "delete-employee",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": ""
+                    }
+                  },
+                  "_postman_previewlanguage": null,
+                  "header": null,
+                  "cookie": [],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Employee deleted successfully\",\r\n  \"data\": {\r\n    \"id\": 1,\r\n    \"deleted\": true\r\n  }\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "get-employee",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/company/get-employee/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company",
+                    "get-employee",
+                    "1"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-employee",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": []
+                  },
+                  "_postman_previewlanguage": null,
+                  "header": null,
+                  "cookie": [],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Employee fetched successfully\",\r\n  \"data\": {\r\n    \"id\": 2,\r\n    \"employee_name\": \"Sarah Wilson\",\r\n    \"email\": \"sarah.wilson@email.com\",\r\n    \"status\": \"Active\",\r\n    \"company_id\": \"c12345\",\r\n    \"employee_image\": \"base64datastring\",\r\n    \"created_at\": \"2026-01-10T14:22:11+05:00\",\r\n    \"updated_at\": \"2026-01-29T11:05:44+05:00\"\r\n  }\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "update-employee",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"employe_name\": \"Sarah Wilson\",\r\n  \"email\": \"sarah.wilson@email.com\",\r\n  \"status\": \"Active\",\r\n  \"password\": \"UserPass#123\",\r\n  \"confirm_password\": \"UserPass#123\",\r\n  \"company_code\": \"c12345\",\r\n   \"employee_image\": \"base64datastring\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/company/update-employee/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company",
+                    "update-employee",
+                    "1"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "update-employee",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"employee_name\": \"Sarah Wilson\",\r\n  \"email\": \"sarah.wilson@email.com\",\r\n  \"status\": \"Active\",\r\n  \"password\": \"UserPass#123\",\r\n  \"confirm_password\": \"UserPass#123\",\r\n  \"company_code\": \"c12345\",\r\n   \"employee_image\": \"base64datastring\"\r\n}\r\n",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Employee updated successfully\",\r\n  \"data\": {\r\n    \"id\": 7,\r\n    \"employee_name\": \"Sarah Wilson\",\r\n    \"email\": \"sarah.wilson@email.com\",\r\n    \"status\": \"Active\",\r\n    \"company_id\": \"c12345\",\r\n    \"employee_image\": \"base64datastring\",\r\n    \"created_at\": \"2026-01-10T14:22:11+05:00\",\r\n    \"updated_at\": \"2026-01-29T12:25:44+05:00\"\r\n  }\r\n}\r\n"
+                }
+              ]
+            },
+            {
+              "name": "create-employee",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"employee_name\": \"Sarah Wilson\",\r\n  \"email\": \"sarah.wilson@email.com\",\r\n  \"status\": \"Active\",\r\n  \"password\": \"UserPass#123\",\r\n  \"confirm_password\": \"UserPass#123\",\r\n  \"company_code\": \"c12345\",\r\n   \"employee_image\": \"base64datastring\"\r\n}\r\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/company/create-employee",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company",
+                    "create-employee"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "create-employee",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\r\n  \"employee_name\": \"Sarah Wilson\",\r\n  \"email\": \"sarah.wilson@email.com\",\r\n  \"status\": \"Active\",\r\n  \"password\": \"UserPass#123\",\r\n  \"confirm_password\": \"UserPass#123\",\r\n  \"company_code\": \"c12345\",\r\n   \"employee_image\": \"base64datastring\"\r\n}\r\n",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Employee created successfully\",\r\n  \"data\": {\r\n    \"id\": 7,\r\n    \"employee_name\": \"Sarah Wilson\",\r\n    \"email\": \"sarah.wilson@email.com\",\r\n    \"status\": \"Active\",\r\n    \"company_id\": \"c12345\",\r\n    \"employee_image\": \"base64datastring\",\r\n    \"created_at\": \"2026-01-29T12:10:30+05:00\",\r\n    \"updated_at\": \"2026-01-29T12:10:30+05:00\"\r\n  }\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "dashboard",
+          "item": [
+            {
+              "name": "get-metrics",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{base_url}}/company/dashboard",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company",
+                    "dashboard"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-metrics",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": ""
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/company/dashboard",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "company",
+                        "dashboard"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Dashboard summary fetched successfully\",\r\n  \"data\": {\r\n    \"cards\": {\r\n      \"totalEmployees\": 46,\r\n      \"totalConsultations\": 932,\r\n      \"totalDoctorsReferred\": 214\r\n    },\r\n    \"chart\": {\r\n      \"type\": \"2d_line\",\r\n      \"xAxisKey\": \"month\",\r\n      \"series\": [\r\n        { \"key\": \"consultations\", \"label\": \"Consultations\" },\r\n        { \"key\": \"doctorsReferred\", \"label\": \"Doctors Referred\" }\r\n      ],\r\n      \"points\": [\r\n        { \"month\": \"2025-02\", \"consultations\": 58, \"doctorsReferred\": 12 },\r\n        { \"month\": \"2025-03\", \"consultations\": 64, \"doctorsReferred\": 14 },\r\n        { \"month\": \"2025-04\", \"consultations\": 71, \"doctorsReferred\": 16 },\r\n        { \"month\": \"2025-05\", \"consultations\": 76, \"doctorsReferred\": 18 },\r\n        { \"month\": \"2025-06\", \"consultations\": 80, \"doctorsReferred\": 17 },\r\n        { \"month\": \"2025-07\", \"consultations\": 83, \"doctorsReferred\": 19 },\r\n        { \"month\": \"2025-08\", \"consultations\": 79, \"doctorsReferred\": 20 },\r\n        { \"month\": \"2025-09\", \"consultations\": 77, \"doctorsReferred\": 18 },\r\n        { \"month\": \"2025-10\", \"consultations\": 82, \"doctorsReferred\": 17 },\r\n        { \"month\": \"2025-11\", \"consultations\": 88, \"doctorsReferred\": 21 },\r\n        { \"month\": \"2025-12\", \"consultations\": 93, \"doctorsReferred\": 22 },\r\n        { \"month\": \"2026-01\", \"consultations\": 81, \"doctorsReferred\": 20 }\r\n      ]\r\n    }\r\n  }\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Doctors Referrd",
+          "item": [
+            {
+              "name": "get-doctors-referred",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/company/get-all-doctors-referred",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company",
+                    "get-all-doctors-referred"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-doctors-referred",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/admin/get-all-doctors-referred",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "get-all-doctors-referred"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Doctor referrals fetched successfully.\",\r\n  \"referrals\": [\r\n    {\r\n      \"id\": 0,\r\n      \"referralCode\": \"000\",\r\n      \"referredTo\": \"Dr Jane Doe\",\r\n      \"platform\": \"Air Doctor\",\r\n      \"country\": \"Mexico\",\r\n      \"date\": \"2019-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    },\r\n     {\r\n      \"id\": 2,\r\n      \"referralCode\": \"000\",\r\n      \"referredTo\": \"Dr Jane Doe\",\r\n      \"platform\": \"Air Doctor\",\r\n      \"country\": \"Mexico\",\r\n      \"date\": \"2019-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    }\r\n  ]\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Consultations",
+          "item": [
+            {
+              "name": "get-all-consultations",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/company/get-all-consultations",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company",
+                    "get-all-consultations"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "all-consultations",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/admin/get-all-consultations",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "get-all-consultations"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Consultations fetched successfully.\",\r\n  \"consultations\": [\r\n    {\r\n      \"id\": 2,\r\n      \"consultationCode\": \"000\",\r\n      \"name\": \"Jane Doe\",\r\n      \"age\": 29,\r\n      \"date\": \"2026-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    },\r\n    {\r\n      \"id\": 3,\r\n      \"consultationCode\": \"000\",\r\n      \"name\": \"Jane Doe\",\r\n      \"age\": 29,\r\n      \"date\": \"2026-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    }\r\n  ]\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Partner Panel",
+      "item": [
+        {
+          "name": "Doctors Referrd",
+          "item": [
+            {
+              "name": "get-doctors-referred",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/company/get-all-doctors-referred",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company",
+                    "get-all-doctors-referred"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-doctors-referred",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/admin/get-all-doctors-referred",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "get-all-doctors-referred"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Doctor referrals fetched successfully.\",\r\n  \"referrals\": [\r\n    {\r\n      \"id\": 0,\r\n      \"referralCode\": \"000\",\r\n      \"referredTo\": \"Dr Jane Doe\",\r\n      \"platform\": \"Air Doctor\",\r\n      \"country\": \"Mexico\",\r\n      \"date\": \"2019-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    },\r\n     {\r\n      \"id\": 2,\r\n      \"referralCode\": \"000\",\r\n      \"referredTo\": \"Dr Jane Doe\",\r\n      \"platform\": \"Air Doctor\",\r\n      \"country\": \"Mexico\",\r\n      \"date\": \"2019-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    }\r\n  ]\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Consultations",
+          "item": [
+            {
+              "name": "get-all-consultations",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJzaGFoYWJoYW1kYW5pQGhvdG1haWwuY29tIiwidXNlcm5hbWUiOiJBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NjI4ODg1MCwiZXhwIjoxNzU2Mzc1MjUwfQ.xC4DCxIu7VuTku4dXQD9uX6YdPoZPPrvVKgFJ0Axyyg",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/partner/get-all-consultations",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "partner",
+                    "get-all-consultations"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "all-consultations",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/admin/get-all-consultations",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "get-all-consultations"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Consultations fetched successfully.\",\r\n  \"consultations\": [\r\n    {\r\n      \"id\": 2,\r\n      \"consultationCode\": \"000\",\r\n      \"name\": \"Jane Doe\",\r\n      \"age\": 29,\r\n      \"date\": \"2026-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    },\r\n    {\r\n      \"id\": 3,\r\n      \"consultationCode\": \"000\",\r\n      \"name\": \"Jane Doe\",\r\n      \"age\": 29,\r\n      \"date\": \"2026-09-04\",\r\n      \"type\": \"OPC\",\r\n      \"status\": \"Success\"\r\n    }\r\n  ]\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Dashboard",
+          "item": [
+            {
+              "name": "get-metrics",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{base_url}}/partner/get-metrics",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "partner",
+                    "get-metrics"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "get-metrics",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": ""
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/admin/get-metrics",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "admin",
+                        "get-metrics"
+                      ]
+                    }
+                  },
+                  "_postman_previewlanguage": "",
+                  "header": [],
+                  "cookie": [
+                    {
+                      "expires": "Invalid Date",
+                      "domain": "",
+                      "path": ""
+                    }
+                  ],
+                  "body": "{\r\n  \"success\": true,\r\n  \"message\": \"Dashboard summary fetched successfully\",\r\n  \"data\": {\r\n    \"cards\": {\r\n      \"totalConsultations\": 932,\r\n      \"totalDoctorsReferred\": 214\r\n    },\r\n    \"chart\": {\r\n      \"type\": \"2d_line\",\r\n      \"xAxisKey\": \"month\",\r\n      \"series\": [\r\n        { \"key\": \"consultations\", \"label\": \"Consultations\" },\r\n        { \"key\": \"doctorsReferred\", \"label\": \"Doctors Referred\" }\r\n      ],\r\n      \"points\": [\r\n        { \"month\": \"2025-02\", \"consultations\": 58, \"doctorsReferred\": 12 },\r\n        { \"month\": \"2025-03\", \"consultations\": 64, \"doctorsReferred\": 14 },\r\n        { \"month\": \"2025-04\", \"consultations\": 71, \"doctorsReferred\": 16 },\r\n        { \"month\": \"2025-05\", \"consultations\": 76, \"doctorsReferred\": 18 },\r\n        { \"month\": \"2025-06\", \"consultations\": 80, \"doctorsReferred\": 17 },\r\n        { \"month\": \"2025-07\", \"consultations\": 83, \"doctorsReferred\": 19 },\r\n        { \"month\": \"2025-08\", \"consultations\": 79, \"doctorsReferred\": 20 },\r\n        { \"month\": \"2025-09\", \"consultations\": 77, \"doctorsReferred\": 18 },\r\n        { \"month\": \"2025-10\", \"consultations\": 82, \"doctorsReferred\": 17 },\r\n        { \"month\": \"2025-11\", \"consultations\": 88, \"doctorsReferred\": 21 },\r\n        { \"month\": \"2025-12\", \"consultations\": 93, \"doctorsReferred\": 22 },\r\n        { \"month\": \"2026-01\", \"consultations\": 81, \"doctorsReferred\": 20 }\r\n      ]\r\n    }\r\n  }\r\n}\r\n"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
