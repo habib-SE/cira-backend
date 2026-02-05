@@ -75,23 +75,37 @@ const createCompany = async (req, res) => {
 
 const getCompanies = async (req, res) => {
     try {
-        const companies = await db(TABLE_NAME).select('*');
-        res.json(companies);
+        // ✅ must be logged in
+        const authUserId = req.auth?.id ?? req.auth?.account_id;
+        if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+
+        const companies = await db(TABLE_NAME).select("*");
+        return res.json(companies);
     } catch (error) {
-        res.status(500).json({ message: 'Failed to fetch companies', error: error.message });
+        return res.status(500).json({
+            message: "Failed to fetch companies",
+            error: error.message,
+        });
     }
 };
 
+
+
 const getCompanyById = async (req, res) => {
     try {
+        const authUserId = req.auth?.id ?? req.auth?.account_id;
+        if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+
         const { id } = req.params;
+
         const company = await db(TABLE_NAME).where({ id }).first();
         if (!company) {
-            return res.status(404).json({ message: 'Company not found' });
+            return res.status(404).json({ message: "Company not found" });
         }
-        res.json(company);
+
+        return res.json(company);
     } catch (error) {
-        res.status(500).json({ message: 'Failed to fetch company', error: error.message });
+        res.status(500).json({ message: "Failed to fetch company", error: error.message });
     }
 };
 
@@ -100,47 +114,95 @@ const updateCompany = async (req, res) => {
         const { id } = req.params;
         const b = req.body || {};
 
+        // ✅ must be logged in
+        const authUserId = req.auth?.id ?? req.auth?.account_id;
+        if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+
+        // ✅ OPTIONAL (recommended): only admin can update companies
+        const role = String(req.auth?.role || "").toLowerCase();
+        if (role !== "admin") {
+            return res.status(403).json({ message: "Forbidden. Only admin can update companies." });
+        }
+
         const company = await db(TABLE_NAME).where({ id }).first();
         if (!company) {
-            return res.status(404).json({ message: 'Company not found' });
+            return res.status(404).json({ message: "Company not found" });
         }
 
         const updates = {};
+
         if (b.company_name || b.name) updates.company_name = b.company_name || b.name;
-        if (b.email || b.contact_email) updates.email = b.email || b.contact_email;
-        if (b.code) updates.code = b.code;
-        if (b.person_name || b.contact_person) updates.person_name = b.person_name || b.contact_person;
-        if (b.phone) updates.phone = b.phone;
+        if (b.code !== undefined) updates.code = b.code || null;
+        if (b.person_name || b.contact_person)
+            updates.person_name = b.person_name || b.contact_person;
+
+        if (b.phone !== undefined) updates.phone = b.phone || null;
         if (b.image_url || b.logo) updates.image_url = b.image_url || b.logo;
-        if (b.user_id) updates.user_id = Number(b.user_id);
         if (b.status) updates.status = b.status;
 
-        await db(TABLE_NAME).where({ id }).update(updates);
-        const updated = await db(TABLE_NAME).where({ id }).first();
+        // ✅ Force role (don’t trust frontend)
+        updates.role = "company";
 
-        res.json({ message: 'Company updated successfully', data: updated });
+        // ✅ update email safely + normalize + prevent duplicates
+        if (b.email || b.contact_email) {
+            const emailNorm = String(b.email || b.contact_email).trim().toLowerCase();
+
+            const exists = await db(TABLE_NAME)
+                .whereRaw("LOWER(email)=?", [emailNorm])
+                .andWhereNot({ id })
+                .first();
+
+            if (exists) {
+                return res.status(409).json({ message: "Another company already uses this email." });
+            }
+
+            updates.email = emailNorm;
+        }
+
+        // ✅ update password_hash if password provided
+        if (b.password) {
+            updates.password_hash = await bcrypt.hash(String(b.password), 10);
+        }
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ message: "No fields to update." });
+        }
+
+        await db(TABLE_NAME).where({ id }).update(updates);
+
+        const updated = await db(TABLE_NAME).where({ id }).first();
+        if (updated) delete updated.password_hash;
+
+        return res.json({ message: "Company updated successfully", data: updated });
     } catch (error) {
-        console.error('Update company error:', error);
-        res.status(500).json({ message: 'Failed to update company', error: error.message });
+        console.error("Update company error:", error);
+        return res.status(500).json({
+            message: "Failed to update company",
+            error: error.message,
+        });
     }
 };
 
 const deleteCompany = async (req, res) => {
     try {
+        const authUserId = req.auth?.id ?? req.auth?.account_id;
+        if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+
         const { id } = req.params;
 
         const company = await db(TABLE_NAME).where({ id }).first();
         if (!company) {
-            return res.status(404).json({ message: 'Company not found' });
+            return res.status(404).json({ message: "Company not found" });
         }
 
         await db(TABLE_NAME).where({ id }).delete();
-        res.json({ message: 'Company deleted successfully' });
+        res.json({ message: "Company deleted successfully" });
     } catch (error) {
-        console.error('Delete company error:', error);
-        res.status(500).json({ message: 'Failed to delete company', error: error.message });
+        console.error("Delete company error:", error);
+        res.status(500).json({ message: "Failed to delete company", error: error.message });
     }
 };
+
 
 export default {
     createCompany,

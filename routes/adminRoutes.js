@@ -7,23 +7,23 @@ const router = express.Router();
 
 // Company Routes
 router.post('/create-company', requireAuth,companyController.createCompany);
-router.get('/companies',requireAuth, companyController.getCompanies);
-router.get('/companies/:id',requireAuth, companyController.getCompanyById);
-router.put('/companies/:id', requireAuth,companyController.updateCompany);
-router.delete('/companies/:id',requireAuth, companyController.deleteCompany);
+router.get('/get-all-companies',requireAuth, companyController.getCompanies);
+router.get('/get-comapny/:id',requireAuth, companyController.getCompanyById);
+router.put('/update-company/:id', requireAuth,companyController.updateCompany);
+router.delete('/delete-company/:id',requireAuth, companyController.deleteCompany);
 
 // Partner Routes
 router.post('/create-partner',requireAuth, partnerController.createPartner);
-router.get('/partners',requireAuth, partnerController.getPartners);
-router.get('/partners/:id',requireAuth, partnerController.getPartnerById);
-router.put('/partners/:id', requireAuth,partnerController.updatePartner);
-router.delete('/partners/:id', requireAuth,partnerController.deletePartner);
+router.get('/get-all-partners',requireAuth, partnerController.getPartners);
+router.get('/get-partner/:id',requireAuth, partnerController.getPartnerById);
+router.put('/update-partner/:id', requireAuth,partnerController.updatePartner);
+router.delete('/delete-partner/:id', requireAuth,partnerController.deletePartner);
 
 // Employee Routes
 router.post('/create-employee',requireAuth, employeeController.createEmployee);
-router.get('/employees',requireAuth, employeeController.getEmployees);
-router.get('/employees/:id',requireAuth, employeeController.getEmployeeById);
-router.put('/employees/:id',requireAuth, employeeController.updateEmployee);
-router.delete('/employees/:id',requireAuth, employeeController.deleteEmployee);
+router.get('/get-all-employees',requireAuth, employeeController.getEmployees);
+router.get('/get-employee/:id',requireAuth, employeeController.getEmployeeById);
+router.put('/update-employee/:id',requireAuth, employeeController.updateEmployee);
+router.delete('/delete-employee/:id',requireAuth, employeeController.deleteEmployee);
 
 export default router;

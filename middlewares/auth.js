@@ -4,7 +4,7 @@ import { JWT_SECRET } from "../config/jwt.js";
 export const requireAuth = (req, res, next) => {
   try {
     const header = req.headers.authorization || "";
-    console.log("🔐 AUTH HEADER:", header);
+    // console.log("🔐 AUTH HEADER:", header);
 
     if (!header.startsWith("Bearer ")) {
       return res.status(401).json({ message: "Unauthorized. Missing Bearer token." });
