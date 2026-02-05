@@ -1,42 +1,77 @@
 import db from '../config/db.js';
+import bcrypt from "bcrypt";
 
 const TABLE_NAME = 'companies';
 
 
+
 const createCompany = async (req, res) => {
-  try {
-    const { company_name, email, person_name, code, phone, image_url, status } =
-      req.body || {};
+    try {
+        const {
+            company_name,
+            email,
+            person_name,
+            code,
+            phone,
+            image_url,
+            status,
+            password, // ✅ NEW (plain password comes from body)
+        } = req.body || {};
 
-    const authUserId = req.auth?.id;
-    if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+        const authUserId = req.auth?.id; // this should be admin user's id
+        if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
 
-    if (!company_name || !email) {
-      return res.status(400).json({ message: "company_name and email are required." });
+        if (!company_name || !email || !password) {
+            return res.status(400).json({
+                message: "company_name, email and password are required.",
+            });
+        }
+
+        const emailNorm = String(email).trim().toLowerCase();
+
+        // ✅ prevent duplicate company email
+        const existing = await db(TABLE_NAME)
+            .whereRaw("LOWER(email)=?", [emailNorm])
+            .first();
+
+        if (existing) {
+            return res.status(409).json({ message: "Company with this email already exists." });
+        }
+
+        // ✅ hash password
+        const password_hash = await bcrypt.hash(String(password), 10);
+
+        const row = {
+            user_id: authUserId,
+            company_name,
+            code: code || null,
+            person_name: person_name || null,
+            email: emailNorm,
+            phone: phone || null,
+            image_url: image_url || null,
+            status: status || "Active",
+            password_hash, // ✅ NEW
+            role: "company", // ✅ optional (if you store role in companies)
+        };
+
+        const [id] = await db(TABLE_NAME).insert(row);
+        const created = await db(TABLE_NAME).where({ id }).first();
+
+        // ✅ never return password_hash
+        if (created) delete created.password_hash;
+
+        return res.status(201).json({
+            message: "Company created successfully",
+            data: created,
+        });
+    } catch (error) {
+        console.error("Create company error:", error);
+        return res.status(500).json({
+            message: "Failed to create company",
+            error: error.message,
+        });
     }
-
-    const row = {
-      user_id: authUserId, // ✅ always valid FK (logged in user)
-      company_name,
-      code: code || null,
-      person_name: person_name || null,
-      email,
-      phone: phone || null,
-      image_url: image_url || null,
-      status: status || "Active",
-    };
-
-    const [id] = await db(TABLE_NAME).insert(row);
-    const created = await db(TABLE_NAME).where({ id }).first();
-
-    return res.status(201).json({ message: "Company created successfully", data: created });
-  } catch (error) {
-    console.error("Create company error:", error);
-    return res.status(500).json({ message: "Failed to create company", error: error.message });
-  }
 };
-
-
 
 const getCompanies = async (req, res) => {
     try {

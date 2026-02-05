@@ -1,44 +1,66 @@
-import db from '../config/db.js';
+import db from "../config/db.js";
+import bcrypt from "bcrypt";
 
 const TABLE_NAME = 'partners';
 
+
+// ✅ POST /create-partner  (protected by requireAuth)
 const createPartner = async (req, res) => {
-    try {
-        const b = req.body || {};
+  try {
+    const {partner_name,person_name,email,phone,branding_config,status,password,image_url} = req.body || {};
 
-        const partner_name = b.partner_name || b.name || null;
-        const person_name = b.person_name || b.contact_person || null;
-        const email = b.email || b.contact_email || null;
-        const phone = b.phone || null;
-        const image_url = b.image_url || b.logo || null;
-        const branding_config = b.branding_config || (b.branding ? JSON.stringify(b.branding) : null);
-        const user_id = b.user_id ? Number(b.user_id) : null;
-        const status = b.status || 'Active';
-
-        if (!partner_name || !email) {
-            return res.status(400).json({ message: 'Partner name and email are required.' });
-        }
-
-        const row = {
-            user_id,
-            partner_name,
-            person_name,
-            email,
-            phone,
-            image_url,
-            branding_config,
-            status
-        };
-
-        const [id] = await db(TABLE_NAME).insert(row);
-        const created = await db(TABLE_NAME).where({ id }).first();
-
-        res.status(201).json({ message: 'Partner created successfully', data: created });
-    } catch (error) {
-        console.error('Create partner error:', error);
-        res.status(500).json({ message: 'Failed to create partner', error: error.message });
+    // ✅ created-by user must be logged in
+    const authUserId = req.auth?.id ?? req.auth?.account_id;
+    if (!authUserId) {
+      return res.status(401).json({ message: "Unauthorized." });
     }
+
+    // ✅ duplicate check (case-insensitive)
+    const existing = await db(TABLE_NAME)
+      .whereRaw("LOWER(email) = ?", [email])
+      .first();
+
+    if (existing) {
+      return res.status(409).json({
+        message: "Partner with this email already exists.",
+      });
+    }
+
+    // ✅ hash password
+    const password_hash = await bcrypt.hash(String(password), 10);
+
+    // ✅ FORCE role; do not trust frontend
+    const row = {
+      user_id: authUserId,
+      partner_name,
+      person_name,
+      email,
+      phone,
+      image_url,
+      branding_config,
+      status,
+      role: "partner",
+      password_hash,
+    };
+
+    const [id] = await db(TABLE_NAME).insert(row);
+
+    const created = await db(TABLE_NAME).where({ id }).first();
+    if (created) delete created.password_hash;
+
+    return res.status(201).json({
+      message: "Partner created successfully",
+      data: created,
+    });
+  } catch (error) {
+    console.error("Create partner error:", error);
+    return res.status(500).json({
+      message: "Failed to create partner",
+      error: error.message,
+    });
+  }
 };
+
 
 const getPartners = async (req, res) => {
     try {

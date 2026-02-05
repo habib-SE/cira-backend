@@ -3,23 +3,25 @@ import { JWT_SECRET } from "../config/jwt.js";
 
 export const requireAuth = (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    const header = req.headers.authorization || "";
+    console.log("🔐 AUTH HEADER:", header);
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Unauthorized. Token missing." });
+    if (!header.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized. Missing Bearer token." });
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = header.slice(7).trim();
+    const decoded = jwt.verify(token, JWT_SECRET);
 
-    // ✅ verify
-    const payload = jwt.verify(token, JWT_SECRET);
+    // ✅ IMPORTANT FIX
+    req.auth = {
+      ...decoded,
+      id: decoded.id ?? decoded.account_id,
+    };
 
-    req.auth = payload; // { id, role, email, iat, exp }
-    next();
+    return next();
   } catch (err) {
-    return res.status(401).json({
-      message: "Unauthorized. Invalid or expired token.",
-      reason: err.message, // ✅ shows: jwt expired | invalid signature | jwt malformed
-    });
+    console.log("❌ AUTH ERROR:", err.message);
+    return res.status(401).json({ message: "Unauthorized." });
   }
 };
