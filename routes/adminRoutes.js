@@ -1,7 +1,6 @@
 import express from 'express';
 import companyController from '../controllers/companyController.js';
 import partnerController from '../controllers/partnerController.js';
-import employeeController from '../controllers/employeeController.js';
 import { requireAuth } from '../middlewares/auth.js';
 const router = express.Router();
 
@@ -19,11 +18,5 @@ router.get('/get-partner/:id',requireAuth, partnerController.getPartnerById);
 router.put('/update-partner/:id', requireAuth,partnerController.updatePartner);
 router.delete('/delete-partner/:id', requireAuth,partnerController.deletePartner);
 
-// Employee Routes
-router.post('/create-employee',requireAuth, employeeController.createEmployee);
-router.get('/get-all-employees',requireAuth, employeeController.getEmployees);
-router.get('/get-employee/:id',requireAuth, employeeController.getEmployeeById);
-router.put('/update-employee/:id',requireAuth, employeeController.updateEmployee);
-router.delete('/delete-employee/:id',requireAuth, employeeController.deleteEmployee);
 
 export default router;
