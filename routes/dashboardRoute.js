@@ -4,6 +4,7 @@ import { getDashboardSummary } from "../controllers/dashboardController.js";
 
 const router = express.Router();
 
-router.get("/dashboard", requireAuth, getDashboardSummary);
+// GET /api/dashboard
+router.get("/", requireAuth, getDashboardSummary);
 
 export default router;
