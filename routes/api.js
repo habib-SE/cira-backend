@@ -28,7 +28,7 @@ router.use('/partner', partnerRoutes);
 router.use("/cira-cloud", cloudRoute);
 
 // General Consultation & Referral Routes (can be accessed by multiple roles)
-router.post('/consultations', consultationController.createConsultation);
+router.post('/create-consultation', consultationController.createConsultation);
 router.get('/consultations', consultationController.getConsultations);
 router.post('/doctor-referrals', doctorReferralController.createDoctorReferral);
 router.get('/doctor-referrals', doctorReferralController.getDoctorReferrals);
