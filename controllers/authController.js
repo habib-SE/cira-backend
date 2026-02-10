@@ -206,7 +206,8 @@ const verifyLoginOtp = async (req, res) => {
   }
 };
 
-const forgotPassword = async (req, res) => {
+
+export const forgotPassword = async (req, res) => {
   try {
     const { role, email } = req.body || {};
 
@@ -216,30 +217,51 @@ const forgotPassword = async (req, res) => {
     }
 
     const emailNorm = String(email || "").trim().toLowerCase();
-    if (!emailNorm) return res.status(400).json({ message: "Role and email are required." });
+    if (!emailNorm) {
+      return res.status(400).json({ message: "Role and email are required." });
+    }
 
     const account = await findByEmail(cfg, emailNorm);
 
-    // generic response (avoid enumeration)
-    if (!account) return res.json({ message: "If that email exists, a reset link has been sent." });
+    // ✅ generic response (avoid enumeration)
+    if (!account) {
+      return res.json({ message: "If that email exists, a reset link has been sent." });
+    }
 
-    const rawToken = crypto.randomBytes(32).toString("hex");
-    const resetHash = crypto.createHash("sha256").update(rawToken).digest("hex");
-    const resetExpires = new Date(Date.now() + 15 * 60 * 1000);
+    // ✅ JWT reset token (15 minutes) -> this will look like eyJhbGciOi...
+    const token = jwt.sign(
+      {
+        account_id: account[cfg.idCol],
+        role: String(role).toLowerCase(),
+        email: account[cfg.emailCol],
+        table: cfg.table,
+      },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
 
+    const token_expires_at = new Date(Date.now() + 15 * 60 * 1000);
+
+    // ✅ IMPORTANT: store RAW JWT token (not hash, not random hex)
     await db(cfg.table)
       .where({ [cfg.idCol]: account[cfg.idCol] })
       .update({
-        token: resetHash,
-        token_expires_at: resetExpires,
+        token: token,
+        token_expires_at: token_expires_at,
       });
 
     const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
     const resetLink =
-      `${baseUrl}/reset-password?role=${encodeURIComponent(String(role).toLowerCase())}` +
-      `&token=${rawToken}&email=${encodeURIComponent(account[cfg.emailCol])}`;
+      `${baseUrl}/auth/reset-password` +
+      `?role=${encodeURIComponent(String(role).toLowerCase())}` +
+      `&token=${encodeURIComponent(token)}` +
+      `&email=${encodeURIComponent(account[cfg.emailCol])}`;
 
     await sendOtpEmail(account[cfg.emailCol], resetLink, "reset_link");
+
+    // ✅ For Postman testing ONLY (optional): uncomment to see JWT in response
+    // return res.json({ message: "Reset password link sent to your email.", token });
 
     return res.json({ message: "Reset password link sent to your email." });
   } catch (error) {
@@ -248,9 +270,9 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
   try {
-    const { role, email, token, newPassword } = req.body || {};
+    const { role, email, token, newPassword, confirmPassword } = req.body || {};
 
     const cfg = getRoleCfg(role);
     if (!cfg) {
@@ -260,33 +282,58 @@ const resetPassword = async (req, res) => {
     const emailNorm = String(email || "").trim().toLowerCase();
     const rawToken = String(token || "").trim();
 
-    if (!emailNorm || !rawToken || !newPassword) {
-      return res.status(400).json({ message: "Role, email, token, and newPassword are required." });
+    if (!emailNorm || !rawToken || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        message: "Role, email, token, newPassword and confirmPassword are required.",
+      });
     }
 
-    const account = await findByEmail(cfg, emailNorm);
+    if (String(newPassword) !== String(confirmPassword)) {
+      return res.status(400).json({ message: "Passwords do not match." });
+    }
 
+    // ✅ verify JWT (expiry/signature checked here)
+    let payload;
+    try {
+      payload = jwt.verify(rawToken, JWT_SECRET);
+    } catch {
+      return res.status(400).json({ message: "Invalid or expired reset token." });
+    }
+
+    // ✅ ensure role/email/table match
     if (
-      !account ||
-      !account.token ||
-      !account.token_expires_at ||
-      new Date(account.token_expires_at).getTime() < Date.now()
+      String(payload?.role || "").toLowerCase() !== String(role).toLowerCase() ||
+      String(payload?.email || "").toLowerCase() !== emailNorm ||
+      String(payload?.table || "") !== String(cfg.table)
     ) {
       return res.status(400).json({ message: "Invalid or expired reset token." });
     }
 
-    const incomingHash = crypto.createHash("sha256").update(rawToken).digest("hex");
-    if (incomingHash !== account.reset_token_hash) {
+    const account = await findByEmail(cfg, emailNorm);
+
+    // ✅ token must exist in DB
+    if (!account || !account.token || !account.token_expires_at) {
       return res.status(400).json({ message: "Invalid or expired reset token." });
     }
 
-    const password_hash = await bcrypt.hash(String(newPassword), 10);
+    // ✅ DB expiry check (extra protection)
+    if (new Date(account.token_expires_at).getTime() < Date.now()) {
+      return res.status(400).json({ message: "Invalid or expired reset token." });
+    }
+
+    // ✅ compare RAW JWT exactly with stored token
+    if (String(account.token).trim() !== rawToken) {
+      return res.status(400).json({ message: "Invalid or expired reset token." });
+    }
+
+    const passwordCol = cfg.passwordCol || "password_hash";
+    const passwordHash = await bcrypt.hash(String(newPassword), 10);
 
     await db(cfg.table)
       .where({ [cfg.idCol]: account[cfg.idCol] })
       .update({
-        password_hash,
-        token_hash: null,
+        [passwordCol]: passwordHash,
+        token: null,
         token_expires_at: null,
       });
 
