@@ -207,6 +207,7 @@ const verifyLoginOtp = async (req, res) => {
 };
 
 
+// In authController.js - forgotPassword function
 export const forgotPassword = async (req, res) => {
   try {
     const { role, email } = req.body || {};
@@ -225,16 +226,17 @@ export const forgotPassword = async (req, res) => {
 
     // ✅ generic response (avoid enumeration)
     if (!account) {
-      return res.json({ message: "If that email exists, a reset link has been sent." });
+      return res.json({ success: true, message: "If that email exists, a reset link has been sent." });
     }
 
-    // ✅ JWT reset token (15 minutes) -> this will look like eyJhbGciOi...
+    // ✅ JWT reset token (15 minutes)
     const token = jwt.sign(
       {
         account_id: account[cfg.idCol],
         role: String(role).toLowerCase(),
         email: account[cfg.emailCol],
         table: cfg.table,
+        type: 'password_reset'
       },
       JWT_SECRET,
       { expiresIn: "15m" }
@@ -242,31 +244,33 @@ export const forgotPassword = async (req, res) => {
 
     const token_expires_at = new Date(Date.now() + 15 * 60 * 1000);
 
-    // ✅ IMPORTANT: store RAW JWT token (not hash, not random hex)
+    // Store the token in database
     await db(cfg.table)
       .where({ [cfg.idCol]: account[cfg.idCol] })
       .update({
-        token: token,
-        token_expires_at: token_expires_at,
+        reset_token: token,
+        reset_token_expires_at: token_expires_at,
       });
 
+    // Create reset link
     const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const resetLink = `${baseUrl}/auth/reset-password?token=${encodeURIComponent(token)}&email=${encodeURIComponent(emailNorm)}&role=${encodeURIComponent(role)}`;
 
-    const resetLink =
-      `${baseUrl}/auth/reset-password` +
-      `?role=${encodeURIComponent(String(role).toLowerCase())}` +
-      `&token=${encodeURIComponent(token)}` +
-      `&email=${encodeURIComponent(account[cfg.emailCol])}`;
+    // ✅ Send HTML email with the link using new format
+    await sendOtpEmail(account[cfg.emailCol], { link: resetLink }, "reset_link");
 
-    await sendOtpEmail(account[cfg.emailCol], resetLink, "reset_link");
-
-    // ✅ For Postman testing ONLY (optional): uncomment to see JWT in response
-    // return res.json({ message: "Reset password link sent to your email.", token });
-
-    return res.json({ message: "Reset password link sent to your email." });
+    return res.json({ 
+      success: true, 
+      message: "Password reset link has been sent to your email.",
+      // For testing/development only
+      ...(process.env.NODE_ENV === 'development' && {
+        test_link: resetLink,
+        test_token: token
+      })
+    });
   } catch (error) {
     console.error("Forgot password error:", error);
-    return res.status(500).json({ message: "Failed to process request", error: error.message });
+    return res.status(500).json({ success: false, message: "Failed to process request" });
   }
 };
 
@@ -276,7 +280,7 @@ export const resetPassword = async (req, res) => {
 
     const cfg = getRoleCfg(role);
     if (!cfg) {
-      return res.status(400).json({ message: "Invalid role. Use admin, company, or partner." });
+      return res.status(400).json({ success: false, message: "Invalid role. Use admin, company, or partner." });
     }
 
     const emailNorm = String(email || "").trim().toLowerCase();
@@ -284,63 +288,64 @@ export const resetPassword = async (req, res) => {
 
     if (!emailNorm || !rawToken || !newPassword || !confirmPassword) {
       return res.status(400).json({
+        success: false,
         message: "Role, email, token, newPassword and confirmPassword are required.",
       });
     }
 
     if (String(newPassword) !== String(confirmPassword)) {
-      return res.status(400).json({ message: "Passwords do not match." });
+      return res.status(400).json({ success: false, message: "Passwords do not match." });
     }
 
-    // ✅ verify JWT (expiry/signature checked here)
+    // Verify JWT token
     let payload;
     try {
       payload = jwt.verify(rawToken, JWT_SECRET);
     } catch {
-      return res.status(400).json({ message: "Invalid or expired reset token." });
+      return res.status(400).json({ success: false, message: "Invalid or expired reset token." });
     }
 
-    // ✅ ensure role/email/table match
-    if (
-      String(payload?.role || "").toLowerCase() !== String(role).toLowerCase() ||
-      String(payload?.email || "").toLowerCase() !== emailNorm ||
-      String(payload?.table || "") !== String(cfg.table)
-    ) {
-      return res.status(400).json({ message: "Invalid or expired reset token." });
+    // Verify token type and data
+    if (payload.type !== 'password_reset' || 
+        String(payload?.role || "").toLowerCase() !== String(role).toLowerCase() ||
+        String(payload?.email || "").toLowerCase() !== emailNorm) {
+      return res.status(400).json({ success: false, message: "Invalid or expired reset token." });
     }
 
     const account = await findByEmail(cfg, emailNorm);
 
-    // ✅ token must exist in DB
-    if (!account || !account.token || !account.token_expires_at) {
-      return res.status(400).json({ message: "Invalid or expired reset token." });
+    // Check if token exists and is valid
+    if (!account || !account.reset_token || !account.reset_token_expires_at) {
+      return res.status(400).json({ success: false, message: "Invalid or expired reset token." });
     }
 
-    // ✅ DB expiry check (extra protection)
-    if (new Date(account.token_expires_at).getTime() < Date.now()) {
-      return res.status(400).json({ message: "Invalid or expired reset token." });
+    // Check expiry from database
+    if (new Date(account.reset_token_expires_at).getTime() < Date.now()) {
+      return res.status(400).json({ success: false, message: "Invalid or expired reset token." });
     }
 
-    // ✅ compare RAW JWT exactly with stored token
-    if (String(account.token).trim() !== rawToken) {
-      return res.status(400).json({ message: "Invalid or expired reset token." });
+    // Verify token matches
+    if (String(account.reset_token).trim() !== rawToken) {
+      return res.status(400).json({ success: false, message: "Invalid or expired reset token." });
     }
 
-    const passwordCol = cfg.passwordCol || "password_hash";
+    // Hash new password
     const passwordHash = await bcrypt.hash(String(newPassword), 10);
 
+    // Update password and clear reset token
     await db(cfg.table)
       .where({ [cfg.idCol]: account[cfg.idCol] })
       .update({
-        [passwordCol]: passwordHash,
-        token: null,
-        token_expires_at: null,
+        password_hash: passwordHash,
+        reset_token: null,
+        reset_token_expires_at: null,
+        updated_at: db.fn.now(),
       });
 
-    return res.json({ message: "Password reset successfully." });
+    return res.json({ success: true, message: "Password reset successfully." });
   } catch (error) {
     console.error("Reset password error:", error);
-    return res.status(500).json({ message: "Failed to reset password", error: error.message });
+    return res.status(500).json({ success: false, message: "Failed to reset password" });
   }
 };
 

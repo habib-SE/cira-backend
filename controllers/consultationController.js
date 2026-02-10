@@ -45,8 +45,7 @@ const createConsultation = async (req, res) => {
       patient_name: String(patient_name).trim(),
       age: numOrNull(age ?? null),
       biological_sex: biological_sex || null,
-      // Store pathway as a JSON field or in a separate column if needed
-      pathway_data: pathway ? JSON.stringify({ pathway }) : null,
+       pathway: pathway || null,
       reason: reason || null,
       doctor_notes: doctor_notes || null,
       duration_minutes: numOrNull(duration_minutes ?? null),
