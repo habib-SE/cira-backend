@@ -11,61 +11,51 @@ const createConsultation = async (req, res) => {
       return res.status(400).json({ message: "user_id is required in params (:user_id)." });
     }
 
-    // ✅ only table-related variables (same style)
+    // Accept all fields from the frontend payload
     const {
-      consultation_code,
       patient_name,
       age,
       biological_sex,
-      consultation_date,
-      consultation_time,
-      duration_minutes,
-      type,
-      status,
+      pathway, // Added this field
       reason,
       doctor_notes,
-      ip_address,
-      user_agent,
+      duration_minutes,
+      type = "OPC",
+      status = "Pending",
+      consultation_date = new Date().toISOString().split('T')[0],
+      consultation_time = null,
+      // Add any other fields from your payload
     } = req.body || {};
 
-    // ✅ basic required checks
+    // Basic validation
     if (!patient_name) {
       return res.status(400).json({ message: "patient_name is required." });
     }
 
-    if (!consultation_date) {
-      return res.status(400).json({ message: "consultation_date is required." });
-    }
-
-    // ✅ safe date parse
+    // Parse date
     const parsedDate = new Date(consultation_date);
     if (Number.isNaN(parsedDate.getTime())) {
       return res.status(400).json({ message: "consultation_date is invalid." });
     }
 
-    // ✅ time normalize (HH:MM -> HH:MM:SS)
-    let finalTime = consultation_time ? String(consultation_time).trim() : null;
-    if (finalTime && /^\d{2}:\d{2}$/.test(finalTime)) finalTime = `${finalTime}:00`;
-    if (finalTime && !/^\d{2}:\d{2}:\d{2}$/.test(finalTime)) {
-      return res.status(400).json({ message: "consultation_time must be HH:MM:SS." });
-    }
-
+    // Create row for database
     const row = {
       user_id,
-      consultation_code: consultation_code || `CONS-${Date.now()}`,
+      consultation_code: `CONS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       patient_name: String(patient_name).trim(),
       age: numOrNull(age ?? null),
       biological_sex: biological_sex || null,
-      consultation_date: parsedDate,
-      consultation_time: finalTime,
-      duration_minutes: numOrNull(duration_minutes ?? null),
-      type: type || "OPC",
-      status: status || "Pending",
+      // Store pathway as a JSON field or in a separate column if needed
+      pathway_data: pathway ? JSON.stringify({ pathway }) : null,
       reason: reason || null,
       doctor_notes: doctor_notes || null,
-      ip_address: ip_address || req.ip || null,
-      user_agent: user_agent || req.headers["user-agent"] || null,
-      // created_at will be auto (if DB default exists)
+      duration_minutes: numOrNull(duration_minutes ?? null),
+      type: type,
+      status: status,
+      consultation_date: parsedDate,
+      consultation_time: consultation_time,
+      ip_address: req.ip || null,
+      user_agent: req.headers["user-agent"] || null,
     };
 
     const [id] = await db(TABLE_NAME).insert(row);
