@@ -2,6 +2,8 @@ import express from 'express';
 import companyController from '../controllers/companyController.js';
 import partnerController from '../controllers/partnerController.js';
 import { requireAuth } from '../middlewares/auth.js';
+import authController from '../controllers/authController.js';
+
 const router = express.Router();
 
 // Company Routes
@@ -19,4 +21,7 @@ router.put('/update-partner/:id', requireAuth,partnerController.updatePartner);
 router.delete('/delete-partner/:id', requireAuth,partnerController.deletePartner);
 
 
+// Auth routes
+router.get("/get-user/:id",requireAuth, authController.getUserById);
+router.put("/update-user/:id",requireAuth, authController.updateAdminUser);
 export default router;

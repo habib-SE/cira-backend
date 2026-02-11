@@ -7,38 +7,38 @@ import { JWT_SECRET } from '../config/jwt.js';
 const TABLE_NAME = 'users';
 
 const register = async (req, res) => {
-    try {
-        const { first_name, last_name, email, password, role, phone } = req.body;
+  try {
+    const { first_name, last_name, email, password, role, phone } = req.body;
 
-        if (!email || !password || !role) {
-            return res.status(400).json({ message: 'Email, password, and role are required.' });
-        }
-
-        const existingUser = await db(TABLE_NAME).where({ email }).first();
-        if (existingUser) {
-            return res.status(400).json({ message: 'User already exists.' });
-        }
-
-        const password_hash = await bcrypt.hash(password, 10);
-
-        const newUser = {
-            first_name,
-            last_name,
-            email,
-            password_hash,
-            role,
-            phone,
-            otp: null,
-            otp_expires_at: null,
-        };
-
-        const [id] = await db(TABLE_NAME).insert(newUser);
-
-        res.status(201).json({ message: 'User registered successfully', userId: id });
-    } catch (error) {
-        console.error('Register error:', error);
-        res.status(500).json({ message: 'Registration failed', error: error.message });
+    if (!email || !password || !role) {
+      return res.status(400).json({ message: 'Email, password, and role are required.' });
     }
+
+    const existingUser = await db(TABLE_NAME).where({ email }).first();
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists.' });
+    }
+
+    const password_hash = await bcrypt.hash(password, 10);
+
+    const newUser = {
+      first_name,
+      last_name,
+      email,
+      password_hash,
+      role,
+      phone,
+      otp: null,
+      otp_expires_at: null,
+    };
+
+    const [id] = await db(TABLE_NAME).insert(newUser);
+
+    res.status(201).json({ message: 'User registered successfully', userId: id });
+  } catch (error) {
+    console.error('Register error:', error);
+    res.status(500).json({ message: 'Registration failed', error: error.message });
+  }
 };
 
 
@@ -83,6 +83,18 @@ const ROLE_MAP = {
       person_name: row.person_name,
     }),
   },
+  employee: {
+    table: "employees",
+    idCol: "id",
+    emailCol: "email",
+    passCol: "password_hash",
+    responseUser: (row) => ({
+      id: row.id,
+      role: "employee",
+      email: row.email,
+      employee_name: row.employee_name,
+    }),
+  },
 };
 
 const getRoleCfg = (role) => ROLE_MAP[String(role || "").toLowerCase()] || null;
@@ -100,7 +112,7 @@ const login = async (req, res) => {
 
     const cfg = getRoleCfg(role);
     if (!cfg) {
-      return res.status(400).json({ message: "Invalid role. Use admin, company, or partner." });
+      return res.status(400).json({ message: "Invalid role. Use admin, company,employee or partner." });
     }
 
     const emailNorm = String(email || "").trim().toLowerCase();
@@ -150,7 +162,7 @@ const verifyLoginOtp = async (req, res) => {
 
     const cfg = getRoleCfg(role);
     if (!cfg) {
-      return res.status(400).json({ message: "Invalid role. Use admin, company, or partner." });
+      return res.status(400).json({ message: "Invalid role. Use admin, company, employee , or partner." });
     }
 
     const emailNorm = String(email || "").trim().toLowerCase();
@@ -213,7 +225,7 @@ export const forgotPassword = async (req, res) => {
 
     const cfg = getRoleCfg(role);
     if (!cfg) {
-      return res.status(400).json({ message: "Invalid role. Use admin, company, or partner." });
+      return res.status(400).json({ message: "Invalid role. Use admin, company, employee, or partner." });
     }
 
     const emailNorm = String(email || "").trim().toLowerCase();
@@ -276,7 +288,7 @@ export const resetPassword = async (req, res) => {
 
     const cfg = getRoleCfg(role);
     if (!cfg) {
-      return res.status(400).json({ message: "Invalid role. Use admin, company, or partner." });
+      return res.status(400).json({ message: "Invalid role. Use admin, company, employee, or partner." });
     }
 
     const emailNorm = String(email || "").trim().toLowerCase();
@@ -346,10 +358,155 @@ export const resetPassword = async (req, res) => {
 
 
 
+
+// ✅ Public response for admin user (safe fields only)
+const mapAdminUser = (row) => {
+  if (!row) return null;
+  return {
+    id: row.id,
+    role: row.role, // should be "admin" typically
+    email: row.email,
+    first_name: row.first_name,
+    last_name: row.last_name,
+    phone: row.phone,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+    last_login_at: row.last_login_at,
+  };
+};
+
+// ✅ GET /users/:id
+export const getUserById = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isFinite(id) || id <= 0) {
+      return res.status(400).json({ message: "Valid user id is required." });
+    }
+
+    const user = await db(TABLE_NAME)
+      .select(
+        "id",
+        "role",
+        "email",
+        "first_name",
+        "last_name",
+        "phone",
+        "created_at",
+        "updated_at",
+        "last_login_at"
+      )
+      .where({ id })
+      .first();
+
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    return res.json({ message: "User fetched successfully.", data: mapAdminUser(user) });
+  } catch (error) {
+    console.error("getUserById error:", error);
+    return res.status(500).json({ message: "Failed to fetch user", error: error.message });
+  }
+};
+
+// ✅ PUT /admin/users/:id  (or /users/:id for admin update)
+export const updateAdminUser = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isFinite(id) || id <= 0) {
+      return res.status(400).json({ message: "Valid user id is required." });
+    }
+
+    const {
+      first_name,
+      last_name,
+      email,
+      phone,
+      password, // optional
+      // role, // ❌ generally don't allow changing role here (optional)
+    } = req.body || {};
+
+    // ✅ Ensure user exists
+    const existing = await db(TABLE_NAME).where({ id }).first();
+    if (!existing) return res.status(404).json({ message: "User not found." });
+
+    // ✅ Email normalize + unique check (only within users table)
+    let emailNorm = null;
+    if (email !== undefined) {
+      emailNorm = String(email || "").trim().toLowerCase();
+      if (!emailNorm) {
+        return res.status(400).json({ message: "Email cannot be empty." });
+      }
+
+      const dup = await db(TABLE_NAME)
+        .whereRaw("LOWER(email) = ?", [emailNorm])
+        .andWhereNot({ id })
+        .first();
+
+      if (dup) {
+        return res.status(400).json({ message: "Email already exists in users." });
+      }
+    }
+
+    // ✅ Build update payload
+    const updatePayload = {};
+
+    if (first_name !== undefined) updatePayload.first_name = String(first_name || "").trim();
+    if (last_name !== undefined) updatePayload.last_name = String(last_name || "").trim();
+    if (email !== undefined) updatePayload.email = emailNorm; // store normalized
+    if (phone !== undefined) updatePayload.phone = String(phone || "").trim();
+
+    // ✅ Password update (optional)
+    if (password !== undefined) {
+      const pass = String(password || "").trim();
+      if (pass.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters." });
+      }
+      updatePayload.password_hash = await bcrypt.hash(pass, 10);
+    }
+
+    // If your table has updated_at and you want to update it manually:
+    // updatePayload.updated_at = db.fn.now();
+
+    // ✅ Nothing to update
+    if (Object.keys(updatePayload).length === 0) {
+      return res.status(400).json({ message: "No fields provided to update." });
+    }
+
+    await db(TABLE_NAME).where({ id }).update(updatePayload);
+
+    // ✅ Return updated user
+    const updated = await db(TABLE_NAME)
+      .select(
+        "id",
+        "role",
+        "email",
+        "first_name",
+        "last_name",
+        "phone",
+        "created_at",
+        "updated_at",
+        "last_login_at"
+      )
+      .where({ id })
+      .first();
+
+    return res.json({
+      message: "Admin user updated successfully.",
+      data: mapAdminUser(updated),
+    });
+  } catch (error) {
+    console.error("updateAdminUser error:", error);
+    return res.status(500).json({ message: "Failed to update user", error: error.message });
+  }
+};
+
+
+
 export default {
-    register,
-    login,
-    verifyLoginOtp,
-    forgotPassword,
-    resetPassword
+  register,
+  login,
+  verifyLoginOtp,
+  forgotPassword,
+  resetPassword,
+  getUserById,
+  updateAdminUser,
 };
