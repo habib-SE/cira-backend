@@ -85,6 +85,7 @@ const createCompany = async (req, res) => {
         email,
         person_name,
         code,
+        employees_count,
         phone,
         image_url, // ✅ can be normal URL OR base64
         status,
@@ -134,6 +135,7 @@ const createCompany = async (req, res) => {
         email: emailNorm,
         phone: phone || null,
         image_url: storedImageUrl,
+        employees_count: employees_count || 0,
         status: status || "Active",
         password_hash,
         role: "company",
@@ -265,91 +267,187 @@ const getCompanyById = async (req, res) => {
 //         });
 //     }
 // };
+// const updateCompany = async (req, res) => {
+//     try {
+//       const { id } = req.params;
+//       const b = req.body || {};
+  
+//       const authUserId = req.auth?.id ?? req.auth?.account_id;
+//       if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+  
+//       // ✅ only admin can update
+//       const role = String(req.auth?.role || "").toLowerCase();
+//       if (role !== "admin") {
+//         return res
+//           .status(403)
+//           .json({ message: "Forbidden. Only admin can update companies." });
+//       }
+  
+//       const company = await db(TABLE_NAME).where({ id }).first();
+//       if (!company) {
+//         return res.status(404).json({ message: "Company not found" });
+//       }
+  
+//       const updates = {};
+  
+//       if (b.company_name || b.name) updates.company_name = b.company_name || b.name;
+//       if (b.code !== undefined) updates.code = b.code || null;
+//       if (b.person_name || b.contact_person)
+//         updates.person_name = b.person_name || b.contact_person;
+//       if (b.phone !== undefined) updates.phone = b.phone || null;
+//       if (b.status) updates.status = b.status;
+  
+//       // ✅ image_url supports base64
+//       if (b.image_url || b.logo) {
+//         const incoming = b.image_url || b.logo;
+//         if (isBase64DataUrl(incoming)) {
+//           updates.image_url = await saveBase64ToCloud(incoming);
+//         } else {
+//           updates.image_url = incoming;
+//         }
+//       }
+  
+//       // ✅ force role
+//       updates.role = "company";
+  
+//       // ✅ update email
+//       if (b.email || b.contact_email) {
+//         const emailNorm = String(b.email || b.contact_email).trim().toLowerCase();
+  
+//         const exists = await db(TABLE_NAME)
+//           .whereRaw("LOWER(email)=?", [emailNorm])
+//           .andWhereNot({ id })
+//           .first();
+  
+//         if (exists) {
+//           return res
+//             .status(409)
+//             .json({ message: "Another company already uses this email." });
+//         }
+  
+//         updates.email = emailNorm;
+//       }
+  
+//       // ✅ update password_hash
+//       if (b.password) {
+//         updates.password_hash = await bcrypt.hash(String(b.password), 10);
+//       }
+  
+//       if (Object.keys(updates).length === 0) {
+//         return res.status(400).json({ message: "No fields to update." });
+//       }
+  
+//       await db(TABLE_NAME).where({ id }).update(updates);
+  
+//       const updated = await db(TABLE_NAME).where({ id }).first();
+//       if (updated) delete updated.password_hash;
+  
+//       return res.json({ message: "Company updated successfully", data: updated });
+//     } catch (error) {
+//       console.error("Update company error:", error);
+//       return res.status(500).json({
+//         message: "Failed to update company",
+//         error: error.message,
+//       });
+//     }
+//   };
+  
+
 const updateCompany = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const b = req.body || {};
-  
-      const authUserId = req.auth?.id ?? req.auth?.account_id;
-      if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
-  
-      // ✅ only admin can update
-      const role = String(req.auth?.role || "").toLowerCase();
-      if (role !== "admin") {
-        return res
-          .status(403)
-          .json({ message: "Forbidden. Only admin can update companies." });
-      }
-  
-      const company = await db(TABLE_NAME).where({ id }).first();
-      if (!company) {
-        return res.status(404).json({ message: "Company not found" });
-      }
-  
-      const updates = {};
-  
-      if (b.company_name || b.name) updates.company_name = b.company_name || b.name;
-      if (b.code !== undefined) updates.code = b.code || null;
-      if (b.person_name || b.contact_person)
-        updates.person_name = b.person_name || b.contact_person;
-      if (b.phone !== undefined) updates.phone = b.phone || null;
-      if (b.status) updates.status = b.status;
-  
-      // ✅ image_url supports base64
-      if (b.image_url || b.logo) {
-        const incoming = b.image_url || b.logo;
-        if (isBase64DataUrl(incoming)) {
-          updates.image_url = await saveBase64ToCloud(incoming);
-        } else {
-          updates.image_url = incoming;
-        }
-      }
-  
-      // ✅ force role
-      updates.role = "company";
-  
-      // ✅ update email
-      if (b.email || b.contact_email) {
-        const emailNorm = String(b.email || b.contact_email).trim().toLowerCase();
-  
-        const exists = await db(TABLE_NAME)
-          .whereRaw("LOWER(email)=?", [emailNorm])
-          .andWhereNot({ id })
-          .first();
-  
-        if (exists) {
-          return res
-            .status(409)
-            .json({ message: "Another company already uses this email." });
-        }
-  
-        updates.email = emailNorm;
-      }
-  
-      // ✅ update password_hash
-      if (b.password) {
-        updates.password_hash = await bcrypt.hash(String(b.password), 10);
-      }
-  
-      if (Object.keys(updates).length === 0) {
-        return res.status(400).json({ message: "No fields to update." });
-      }
-  
-      await db(TABLE_NAME).where({ id }).update(updates);
-  
-      const updated = await db(TABLE_NAME).where({ id }).first();
-      if (updated) delete updated.password_hash;
-  
-      return res.json({ message: "Company updated successfully", data: updated });
-    } catch (error) {
-      console.error("Update company error:", error);
-      return res.status(500).json({
-        message: "Failed to update company",
-        error: error.message,
-      });
+  try {
+    const { id } = req.params;
+    const b = req.body || {};
+
+    const authUserId = req.auth?.id ?? req.auth?.account_id;
+    if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+
+    // ✅ only admin can update
+    const role = String(req.auth?.role || "").toLowerCase();
+    if (role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Forbidden. Only admin can update companies." });
     }
-  };
-  
+
+    const company = await db(TABLE_NAME).where({ id }).first();
+    if (!company) {
+      return res.status(404).json({ message: "Company not found" });
+    }
+
+    const updates = {};
+
+    if (b.company_name || b.name) updates.company_name = b.company_name || b.name;
+    if (b.code !== undefined) updates.code = b.code || null;
+    if (b.person_name || b.contact_person)
+      updates.person_name = b.person_name || b.contact_person;
+    if (b.phone !== undefined) updates.phone = b.phone || null;
+    if (b.status) updates.status = b.status;
+
+    // ✅ Add handling for employees_count
+    if (b.employees_count !== undefined) {
+      const employeesCount = Number(b.employees_count);
+      if (!isNaN(employeesCount) && employeesCount >= 0) {
+        updates.employees_count = employeesCount;
+      } else {
+        return res.status(400).json({ message: "Invalid employees_count value" });
+      }
+    }
+
+    // ✅ image_url supports base64
+    if (b.image_url || b.logo) {
+      const incoming = b.image_url || b.logo;
+      if (isBase64DataUrl(incoming)) {
+        updates.image_url = await saveBase64ToCloud(incoming);
+      } else {
+        updates.image_url = incoming;
+      }
+    }
+
+    // ✅ force role
+    updates.role = "company";
+
+    // ✅ update email
+    if (b.email || b.contact_email) {
+      const emailNorm = String(b.email || b.contact_email).trim().toLowerCase();
+
+      const exists = await db(TABLE_NAME)
+        .whereRaw("LOWER(email)=?", [emailNorm])
+        .andWhereNot({ id })
+        .first();
+
+      if (exists) {
+        return res
+          .status(409)
+          .json({ message: "Another company already uses this email." });
+      }
+
+      updates.email = emailNorm;
+    }
+
+    // ✅ update password_hash
+    if (b.password) {
+      updates.password_hash = await bcrypt.hash(String(b.password), 10);
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ message: "No fields to update." });
+    }
+
+    await db(TABLE_NAME).where({ id }).update(updates);
+
+    const updated = await db(TABLE_NAME).where({ id }).first();
+    if (updated) delete updated.password_hash;
+
+    return res.json({ message: "Company updated successfully", data: updated });
+  } catch (error) {
+    console.error("Update company error:", error);
+    return res.status(500).json({
+      message: "Failed to update company",
+      error: error.message,
+    });
+  }
+};
+
 const deleteCompany = async (req, res) => {
     try {
         const authUserId = req.auth?.id ?? req.auth?.account_id;

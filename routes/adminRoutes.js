@@ -9,7 +9,7 @@ const router = express.Router();
 // Company Routes
 router.post('/create-company', requireAuth,companyController.createCompany);
 router.get('/get-all-companies',requireAuth, companyController.getCompanies);
-router.get('/get-comapny/:id',requireAuth, companyController.getCompanyById);
+router.get('/get-company/:id',requireAuth, companyController.getCompanyById);
 router.put('/update-company/:id', requireAuth,companyController.updateCompany);
 router.delete('/delete-company/:id',requireAuth, companyController.deleteCompany);
 

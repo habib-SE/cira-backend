@@ -30,6 +30,7 @@ const register = async (req, res) => {
       phone,
       otp: null,
       otp_expires_at: null,
+      image_url: req.body.image_url || null, 
     };
 
     const [id] = await db(TABLE_NAME).insert(newUser);
@@ -55,6 +56,7 @@ const ROLE_MAP = {
       email: row.email,
       first_name: row.first_name,
       last_name: row.last_name,
+      image_url: row.image_url || null, 
     }),
   },
   company: {
@@ -68,6 +70,7 @@ const ROLE_MAP = {
       email: row.email,
       company_name: row.company_name,
       person_name: row.person_name,
+      image_url: row.image_url || null, 
     }),
   },
   partner: {
@@ -81,6 +84,7 @@ const ROLE_MAP = {
       email: row.email,
       partner_name: row.partner_name,
       person_name: row.person_name,
+        image_url: row.image_url || null, 
     }),
   },
   employee: {
@@ -93,6 +97,7 @@ const ROLE_MAP = {
       role: "employee",
       email: row.email,
       employee_name: row.employee_name,
+        image_url: row.image_url || null, 
     }),
   },
 };
@@ -211,6 +216,7 @@ const verifyLoginOtp = async (req, res) => {
       message: "Login successful",
       token,
       user: cfg.responseUser(account),
+      image_url: account.image_url || null,
     });
   } catch (error) {
     console.error("Verify login OTP error:", error);
