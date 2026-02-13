@@ -467,6 +467,86 @@ const deleteCompany = async (req, res) => {
         res.status(500).json({ message: "Failed to delete company", error: error.message });
     }
 };
+const updateCompanyProfile = async (req, res) => {
+  try {
+    // ✅ Ensure the company is logged in
+    const authUserId = req.auth?.id;
+    if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+
+    const { id } = req.params; // Company ID to update
+    const b = req.body || {};
+
+    // Only allow the logged-in user to update their own company profile
+    if (id !== req.auth?.company_id) {
+      return res.status(403).json({ message: "Forbidden. You cannot update this company." });
+    }
+
+    const updates = {};
+
+    if (b.company_name) updates.company_name = b.company_name;
+    if (b.email) updates.email = String(b.email).trim();
+    if (b.person_name) updates.person_name = b.person_name;
+    if (b.phone) updates.phone = b.phone;
+    if (b.image_url) updates.image_url = b.image_url;
+
+    // Optional: Update password
+    if (b.password) {
+      updates.password_hash = await bcrypt.hash(String(b.password), 10);
+    }
+
+    // Prevent duplicate email for this company
+    const existingCompany = await db(TABLE_NAME)
+      .whereRaw("LOWER(email)=LOWER(?)", [String(b.email).trim()])
+      .first();
+    if (existingCompany && existingCompany.id !== id) {
+      return res.status(400).json({ message: "Email is already in use by another company." });
+    }
+
+    if (!Object.keys(updates).length) {
+      return res.status(400).json({ message: "No fields to update." });
+    }
+
+    await db(TABLE_NAME).where({ id }).update(updates);
+    const updatedCompany = await db(TABLE_NAME).where({ id }).first();
+
+    // Remove password hash before sending response
+    if (updatedCompany) delete updatedCompany.password_hash;
+
+    return res.status(200).json({ message: "Company profile updated successfully", data: updatedCompany });
+  } catch (error) {
+    console.error("Update company error:", error);
+    return res.status(500).json({ message: "Failed to update company profile", error: error.message });
+  }
+};
+
+const getCompanyProfile = async (req, res) => {
+  try {
+    // ✅ Ensure the company is logged in
+    const authUserId = req.auth?.id;
+    if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+
+    // Fetch the company ID from the logged-in user's session
+    const companyId = req.auth?.company_id;
+    if (!companyId) {
+      return res.status(401).json({ message: "Company ID not found in session." });
+    }
+
+    // Retrieve the company data from the database
+    const company = await db(TABLE_NAME).where({ id: companyId }).first();
+
+    if (!company) {
+      return res.status(404).json({ message: "Company not found" });
+    }
+
+    // Remove password hash before sending response
+    delete company.password_hash;
+
+    return res.status(200).json({ message: "Company profile retrieved successfully", data: company });
+  } catch (error) {
+    console.error("Fetch company profile error:", error);
+    return res.status(500).json({ message: "Failed to fetch company profile", error: error.message });
+  }
+};
 
 
 export default {
@@ -474,5 +554,7 @@ export default {
     getCompanies,
     getCompanyById,
     updateCompany,
-    deleteCompany
+    deleteCompany,
+    updateCompanyProfile,
+    getCompanyProfile
 };

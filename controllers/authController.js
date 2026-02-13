@@ -42,6 +42,65 @@ const register = async (req, res) => {
   }
 };
 
+const updateAdminUser = async (req, res) => {
+  try {
+    const { first_name, last_name, email, password, phone, image_url } = req.body;
+    const { id } = req.params;  // Admin user ID to update
+
+    // Ensure the user is logged in and is an admin
+    const authUserId = req.auth?.id;
+    const authRole = req.auth?.role;
+    
+    if (!authUserId || authRole !== 'admin') {
+      return res.status(401).json({ message: 'Unauthorized. Only admins can update their profile.' });
+    }
+
+    // Only allow the admin to update their own profile
+    if (authUserId !== Number(id)) {
+      return res.status(403).json({ message: "Forbidden. You can't update this user." });
+    }
+
+    // Prepare the update object
+    const updates = {};
+
+    if (first_name) updates.first_name = first_name;
+    if (last_name) updates.last_name = last_name;
+    if (phone) updates.phone = phone;
+    if (image_url) updates.image_url = image_url;
+
+    // Prevent email conflicts (check if the new email is already taken by another admin or user)
+    if (email) {
+      const existingUser = await db(TABLE_NAME).whereRaw("LOWER(email)=LOWER(?)", [email]).first();
+      if (existingUser && existingUser.id !== id) {
+        return res.status(400).json({ message: 'Email is already taken by another user.' });
+      }
+      updates.email = email;
+    }
+
+    // Handle password update (optional)
+    if (password) {
+      const password_hash = await bcrypt.hash(password, 10);
+      updates.password_hash = password_hash;
+    }
+
+    // If no updates were provided, return an error
+    if (!Object.keys(updates).length) {
+      return res.status(400).json({ message: 'No fields to update.' });
+    }
+
+    // Update the user in the database
+    await db(TABLE_NAME).where({ id }).update(updates);
+    const updatedUser = await db(TABLE_NAME).where({ id }).first();
+
+    // Remove password_hash before returning the response
+    if (updatedUser) delete updatedUser.password_hash;
+
+    return res.status(200).json({ message: 'User profile updated successfully', data: updatedUser });
+  } catch (error) {
+    console.error('Update admin user error:', error);
+    return res.status(500).json({ message: 'Failed to update user profile', error: error.message });
+  }
+};
 
 // Map role => table config
 const ROLE_MAP = {
@@ -410,98 +469,6 @@ export const getUserById = async (req, res) => {
   } catch (error) {
     console.error("getUserById error:", error);
     return res.status(500).json({ message: "Failed to fetch user", error: error.message });
-  }
-};
-
-// ✅ PUT /admin/users/:id  (or /users/:id for admin update)
-export const updateAdminUser = async (req, res) => {
-  try {
-    const id = Number(req.params.id);
-    if (!Number.isFinite(id) || id <= 0) {
-      return res.status(400).json({ message: "Valid user id is required." });
-    }
-
-    const {
-      first_name,
-      last_name,
-      email,
-      phone,
-      password, // optional
-      // role, // ❌ generally don't allow changing role here (optional)
-    } = req.body || {};
-
-    // ✅ Ensure user exists
-    const existing = await db(TABLE_NAME).where({ id }).first();
-    if (!existing) return res.status(404).json({ message: "User not found." });
-
-    // ✅ Email normalize + unique check (only within users table)
-    let emailNorm = null;
-    if (email !== undefined) {
-      emailNorm = String(email || "").trim().toLowerCase();
-      if (!emailNorm) {
-        return res.status(400).json({ message: "Email cannot be empty." });
-      }
-
-      const dup = await db(TABLE_NAME)
-        .whereRaw("LOWER(email) = ?", [emailNorm])
-        .andWhereNot({ id })
-        .first();
-
-      if (dup) {
-        return res.status(400).json({ message: "Email already exists in users." });
-      }
-    }
-
-    // ✅ Build update payload
-    const updatePayload = {};
-
-    if (first_name !== undefined) updatePayload.first_name = String(first_name || "").trim();
-    if (last_name !== undefined) updatePayload.last_name = String(last_name || "").trim();
-    if (email !== undefined) updatePayload.email = emailNorm; // store normalized
-    if (phone !== undefined) updatePayload.phone = String(phone || "").trim();
-
-    // ✅ Password update (optional)
-    if (password !== undefined) {
-      const pass = String(password || "").trim();
-      if (pass.length < 6) {
-        return res.status(400).json({ message: "Password must be at least 6 characters." });
-      }
-      updatePayload.password_hash = await bcrypt.hash(pass, 10);
-    }
-
-    // If your table has updated_at and you want to update it manually:
-    // updatePayload.updated_at = db.fn.now();
-
-    // ✅ Nothing to update
-    if (Object.keys(updatePayload).length === 0) {
-      return res.status(400).json({ message: "No fields provided to update." });
-    }
-
-    await db(TABLE_NAME).where({ id }).update(updatePayload);
-
-    // ✅ Return updated user
-    const updated = await db(TABLE_NAME)
-      .select(
-        "id",
-        "role",
-        "email",
-        "first_name",
-        "last_name",
-        "phone",
-        "created_at",
-        "updated_at",
-        "last_login_at"
-      )
-      .where({ id })
-      .first();
-
-    return res.json({
-      message: "Admin user updated successfully.",
-      data: mapAdminUser(updated),
-    });
-  } catch (error) {
-    console.error("updateAdminUser error:", error);
-    return res.status(500).json({ message: "Failed to update user", error: error.message });
   }
 };
 

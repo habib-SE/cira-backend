@@ -1,5 +1,6 @@
 import express from 'express';
 import employeeController from '../controllers/employeeController.js';
+import companyController from '../controllers/companyController.js';
 import { requireAuth } from '../middlewares/auth.js';
 const router = express.Router();
 
@@ -9,5 +10,8 @@ router.get('/get-all-employees', requireAuth,employeeController.getEmployees);
 router.get('/get-employee/:id',requireAuth, employeeController.getEmployeeById);
 router.put('/update-employee/:id', requireAuth,employeeController.updateEmployee);
 router.delete('/delete-employee/:id',requireAuth, employeeController.deleteEmployee);
+
+router.put('/update-profile/:id', requireAuth, companyController.updateCompanyProfile);
+router.get('/get-profile/:id', requireAuth, companyController.getCompanyProfile);
 
 export default router;
