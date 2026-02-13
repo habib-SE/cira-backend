@@ -88,80 +88,6 @@ const createPartner = async (req, res) => {
   }
 };
 
-// const createPartner = async (req, res) => {
-//     try {
-//       const {
-//         partner_name,
-//         person_name,
-//         email,
-//         phone,
-//         branding_config,
-//         status,
-//         password,
-//         image_url,
-//       } = req.body || {};
-  
-//       // ✅ must be logged in
-//       const authUserId = req.auth?.id ?? req.auth?.account_id;
-//       if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
-  
-//       if (!partner_name || !email || !password) {
-//         return res.status(400).json({
-//           message: "partner_name, email, and password are required.",
-//         });
-//       }
-  
-//       const emailNorm = String(email).trim().toLowerCase();
-  
-//       // ✅ duplicate check (case-insensitive)
-//       const existing = await db(TABLE_NAME)
-//         .whereRaw("LOWER(email)=?", [emailNorm])
-//         .first();
-  
-//       if (existing) {
-//         return res.status(409).json({
-//           message: "Partner with this email already exists.",
-//         });
-//       }
-  
-//       // ✅ upload base64 image if needed
-//       const finalImageUrl = await handleBase64ImageUpload(image_url, "partner");
-  
-//       // ✅ hash password
-//       const password_hash = await bcrypt.hash(String(password), 10);
-  
-//       const row = {
-//         user_id: authUserId,
-//         partner_name,
-//         person_name: person_name || null,
-//         email: emailNorm,
-//         phone: phone || null,
-//         image_url: finalImageUrl || null,
-//         branding_config: branding_config || null,
-//         status: status || "Active",
-//         role: "partner",
-//         password_hash,
-//       };
-  
-//       const [id] = await db(TABLE_NAME).insert(row);
-  
-//       const created = await db(TABLE_NAME).where({ id }).first();
-//       if (created) delete created.password_hash;
-  
-//       return res.status(201).json({
-//         message: "Partner created successfully",
-//         data: created,
-//       });
-//     } catch (error) {
-//       console.error("Create partner error:", error);
-//       return res.status(500).json({
-//         message: "Failed to create partner",
-//         error: error.message,
-//       });
-//     }
-//   };
-  
-
 const getPartners = async (req, res) => {
     try {
         const authUserId = req.auth?.id ?? req.auth?.account_id;
@@ -189,41 +115,6 @@ const getPartnerById = async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch partner', error: error.message });
     }
 };
-
-// const updatePartner = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const b = req.body || {};
-//         const authUserId = req.auth?.id ?? req.auth?.account_id;
-//         if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
-//         const role = String(req.auth?.role || "").toLowerCase();
-//         if (role !== "admin") {
-//             return res.status(403).json({ message: "Forbidden. Only admin can update companies." });
-//         }
-//         const partner = await db(TABLE_NAME).where({ id }).first();
-//         if (!partner) {
-//             return res.status(404).json({ message: 'Partner not found' });
-//         }
-
-//         const updates = {};
-//         if (b.partner_name || b.name) updates.partner_name = b.partner_name || b.name;
-//         if (b.person_name || b.contact_person) updates.person_name = b.person_name || b.contact_person;
-//         if (b.email || b.contact_email) updates.email = b.email || b.contact_email;
-//         if (b.phone) updates.phone = b.phone;
-//         if (b.image_url || b.logo) updates.image_url = b.image_url || b.logo;
-//         if (b.branding_config) updates.branding_config = b.branding_config;
-//         if (b.branding) updates.branding_config = JSON.stringify(b.branding);
-//         if (b.status) updates.status = b.status;
-
-//         await db(TABLE_NAME).where({ id }).update(updates);
-//         const updated = await db(TABLE_NAME).where({ id }).first();
-
-//         res.json({ message: 'Partner updated successfully', data: updated });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Failed to update partner', error: error.message });
-//     }
-// };
-
 
 const updatePartner = async (req, res) => {
     try {
@@ -337,11 +228,185 @@ const deletePartner = async (req, res) => {
   }
 };
 
+// const updatePartnerProfile = async (req, res) => {
+//   try {
+//     const { partner_name, person_name, email, phone, branding_config, status, image_url, password } = req.body || {};
+//     const { id } = req.params; // Partner ID to update
+
+//     // ✅ Ensure the partner is logged in
+//     const authUserId = req.auth?.id ?? req.auth?.account_id;
+//     if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+
+//     // Only allow the partner to update their own profile
+//     if (authUserId !== Number(id)) {
+//       return res.status(403).json({ message: "Forbidden. You cannot update this partner." });
+//     }
+
+//     // Prepare the update object
+//     const updates = {};
+
+//     if (partner_name) updates.partner_name = partner_name;
+//     if (person_name) updates.person_name = person_name;
+//     if (phone) updates.phone = phone;
+//     if (branding_config) updates.branding_config = branding_config;
+//     if (status) updates.status = status;
+//     if (email) {
+//       const emailNorm = String(email).trim().toLowerCase();
+//       const existingPartner = await db(TABLE_NAME).whereRaw("LOWER(email)=LOWER(?)", [emailNorm]).first();
+//       if (existingPartner && existingPartner.id !== id) {
+//         return res.status(400).json({ message: "Email is already taken by another partner." });
+//       }
+//       updates.email = emailNorm;
+//     }
+
+//     // Handle password update (optional)
+//     if (password) {
+//       const password_hash = await bcrypt.hash(String(password), 10);
+//       updates.password_hash = password_hash;
+//     }
+
+//     // Handle image_url (base64 or URL)
+//     if (image_url) {
+//       let storedImageUrl = null;
+//       if (isBase64DataUrl(image_url)) {
+//         storedImageUrl = await saveBase64ToCloud(image_url); // Upload to cloud
+//       } else {
+//         storedImageUrl = image_url; // Keep as URL
+//       }
+//       updates.image_url = storedImageUrl;
+//     }
+
+//     // If no valid fields to update, return error
+//     if (!Object.keys(updates).length) {
+//       return res.status(400).json({ message: "No fields to update." });
+//     }
+
+//     // Update the partner in the database
+//     await db(TABLE_NAME).where({ id }).update(updates);
+//     const updatedPartner = await db(TABLE_NAME).where({ id }).first();
+
+//     // Remove password hash before returning response
+//     if (updatedPartner) delete updatedPartner.password_hash;
+
+//     return res.status(200).json({ message: "Partner profile updated successfully", data: updatedPartner });
+//   } catch (error) {
+//     console.error("Update partner profile error:", error);
+//     return res.status(500).json({ message: "Failed to update partner profile", error: error.message });
+//   }
+// };
+const updatePartnerProfile = async (req, res) => {
+  try {
+    const { partner_name, person_name, email, phone, status, password, image_url, branding } = req.body || {};
+    const { id } = req.params; // Partner ID to update
+
+    // ✅ Ensure the partner is logged in
+    const authUserId = req.auth?.id ?? req.auth?.account_id;
+    if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+
+    // Only allow the partner to update their own profile
+    if (authUserId !== Number(id)) {
+      return res.status(403).json({ message: "Forbidden. You cannot update this partner." });
+    }
+
+    // Prepare the update object
+    const updates = {};
+
+    if (partner_name) updates.partner_name = partner_name;
+    if (person_name) updates.person_name = person_name;
+    if (phone) updates.phone = phone;
+    if (status) updates.status = status;
+
+    // Handle email update (check if it's already taken by another partner)
+    if (email) {
+      const emailNorm = String(email).trim().toLowerCase();
+      const existingPartner = await db(TABLE_NAME).whereRaw("LOWER(email)=LOWER(?)", [emailNorm]).first();
+      if (existingPartner && existingPartner.id !== id) {
+        return res.status(400).json({ message: "Email is already taken by another partner." });
+      }
+      updates.email = emailNorm;
+    }
+
+    // Handle password update (optional)
+    if (password) {
+      const password_hash = await bcrypt.hash(String(password), 10);
+      updates.password_hash = password_hash;
+    }
+
+    // Handle branding update (if provided)
+    if (branding) {
+      // Flatten branding config if it's provided
+      if (branding.primaryColor || branding.secondaryColor) {
+        updates.branding_config = JSON.stringify(branding); // Store as JSON
+      }
+    }
+
+    // Handle image_url (base64 or URL)
+    if (image_url) {
+      let storedImageUrl = null;
+      if (isBase64DataUrl(image_url)) {
+        storedImageUrl = await saveBase64ToCloud(image_url); // Upload to cloud if base64
+      } else {
+        storedImageUrl = image_url; // Keep as URL if not base64
+      }
+      updates.image_url = storedImageUrl;
+    }
+
+    // If no valid fields to update, return error
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ message: "No fields to update." });
+    }
+
+    // Update the partner in the database
+    await db(TABLE_NAME).where({ id }).update(updates);
+    const updatedPartner = await db(TABLE_NAME).where({ id }).first();
+
+    // Remove password hash before returning response
+    if (updatedPartner) delete updatedPartner.password_hash;
+
+    return res.status(200).json({ message: "Partner profile updated successfully", data: updatedPartner });
+  } catch (error) {
+    console.error("Update partner profile error:", error);
+    return res.status(500).json({ message: "Failed to update partner profile", error: error.message });
+  }
+};
+
+
+const getPartnerProfile = async (req, res) => {
+  try {
+    const { id } = req.params; // Partner ID to fetch
+
+    // ✅ Ensure the partner is logged in
+    const authUserId = req.auth?.id ?? req.auth?.account_id;
+    if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
+
+    // Only allow the partner to view their own profile
+    if (authUserId !== Number(id)) {
+      return res.status(403).json({ message: "Forbidden. You cannot view this partner's profile." });
+    }
+
+    // Retrieve the partner data from the database based on partnerId
+    const partner = await db(TABLE_NAME).where({ id }).first();
+
+    if (!partner) {
+      return res.status(404).json({ message: "Partner not found" });
+    }
+
+    // Remove password hash before sending the response
+    delete partner.password_hash;
+
+    return res.status(200).json({ message: "Partner profile retrieved successfully", data: partner });
+  } catch (error) {
+    console.error("Fetch partner profile error:", error);
+    return res.status(500).json({ message: "Failed to fetch partner profile", error: error.message });
+  }
+};
 
 export default {
     createPartner,
     getPartners,
     getPartnerById,
     updatePartner,
-    deletePartner
+    deletePartner,
+    getPartnerProfile,
+    updatePartnerProfile
 };
