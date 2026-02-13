@@ -473,39 +473,60 @@ const updateCompanyProfile = async (req, res) => {
     const authUserId = req.auth?.id;
     if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
 
-    const { id } = req.params; // Company ID to update
-    const b = req.body || {};
+    const { id } = req.params;  // Get the company ID from the URL parameter
+    const b = req.body || {};   // Get the body of the request
 
-    // Only allow the logged-in user to update their own company profile
-    if (id !== req.auth?.company_id) {
+    // Only allow the logged-in user to update their own company profile (based on role)
+    if (req.auth?.role !== "company") {
+      return res.status(403).json({ message: "Forbidden. You must be a company to update this profile." });
+    }
+
+    // Check if the company ID in URL matches the logged-in user's ID
+    if (id !== String(authUserId)) {
       return res.status(403).json({ message: "Forbidden. You cannot update this company." });
     }
 
+    // Prepare the update object
     const updates = {};
 
+    // Only update company name if provided
     if (b.company_name) updates.company_name = b.company_name;
-    if (b.email) updates.email = String(b.email).trim();
+    if (b.email) updates.email = String(b.email).trim();  // Email is allowed to be updated
     if (b.person_name) updates.person_name = b.person_name;
     if (b.phone) updates.phone = b.phone;
     if (b.image_url) updates.image_url = b.image_url;
 
-    // Optional: Update password
+    // Optional: Update password if provided
     if (b.password) {
       updates.password_hash = await bcrypt.hash(String(b.password), 10);
     }
 
-    // Prevent duplicate email for this company
-    const existingCompany = await db(TABLE_NAME)
-      .whereRaw("LOWER(email)=LOWER(?)", [String(b.email).trim()])
-      .first();
-    if (existingCompany && existingCompany.id !== id) {
-      return res.status(400).json({ message: "Email is already in use by another company." });
+    // Check if the email has changed (skip validation if it hasn't changed)
+    if (b.email) {
+      // Fetch the current email of the company
+      const existingCompany = await db(TABLE_NAME)
+        .where({ id })
+        .select("email")
+        .first();
+
+      // If the email is the same as before, skip the duplicate check
+      if (existingCompany && existingCompany.email !== b.email) {
+        // Email is changed, check if it's unique across other companies
+        const emailExists = await db(TABLE_NAME)
+          .whereRaw("LOWER(email)=LOWER(?)", [String(b.email).trim()])
+          .first();
+
+        if (emailExists) {
+          return res.status(400).json({ message: "Email is already in use by another company." });
+        }
+      }
     }
 
     if (!Object.keys(updates).length) {
       return res.status(400).json({ message: "No fields to update." });
     }
 
+    // Update the company in the database
     await db(TABLE_NAME).where({ id }).update(updates);
     const updatedCompany = await db(TABLE_NAME).where({ id }).first();
 
@@ -519,20 +540,28 @@ const updateCompanyProfile = async (req, res) => {
   }
 };
 
+
+
 const getCompanyProfile = async (req, res) => {
   try {
     // ✅ Ensure the company is logged in
     const authUserId = req.auth?.id;
     if (!authUserId) return res.status(401).json({ message: "Unauthorized." });
 
-    // Fetch the company ID from the logged-in user's session
-    const companyId = req.auth?.company_id;
-    if (!companyId) {
-      return res.status(401).json({ message: "Company ID not found in session." });
+    // Check if the logged-in user is a company
+    if (req.auth?.role !== "company") {
+      return res.status(403).json({ message: "Forbidden. You must be a company to view this profile." });
+    }
+
+    const { id } = req.params; // Company ID to fetch
+
+    // Only allow the logged-in user to view their own company profile
+    if (id !== String(authUserId)) {
+      return res.status(403).json({ message: "Forbidden. You cannot view this company." });
     }
 
     // Retrieve the company data from the database
-    const company = await db(TABLE_NAME).where({ id: companyId }).first();
+    const company = await db(TABLE_NAME).where({ id: authUserId }).first();
 
     if (!company) {
       return res.status(404).json({ message: "Company not found" });
@@ -547,6 +576,7 @@ const getCompanyProfile = async (req, res) => {
     return res.status(500).json({ message: "Failed to fetch company profile", error: error.message });
   }
 };
+
 
 
 export default {

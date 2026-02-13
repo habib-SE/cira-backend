@@ -68,13 +68,19 @@ const updateAdminUser = async (req, res) => {
     if (phone) updates.phone = phone;
     if (image_url) updates.image_url = image_url;
 
-    // Prevent email conflicts (check if the new email is already taken by another admin or user)
+    // Check if the email has changed
     if (email) {
-      const existingUser = await db(TABLE_NAME).whereRaw("LOWER(email)=LOWER(?)", [email]).first();
-      if (existingUser && existingUser.id !== id) {
-        return res.status(400).json({ message: 'Email is already taken by another user.' });
+      const existingUser = await db(TABLE_NAME).where({ id }).first();  // Fetch the existing user
+      if (existingUser.email !== email) {
+        // Email is different, check if it's already taken by another admin or user
+        const emailExists = await db(TABLE_NAME)
+          .whereRaw("LOWER(email)=LOWER(?)", [email])
+          .first();
+        if (emailExists) {
+          return res.status(400).json({ message: 'Email is already taken by another user.' });
+        }
+        updates.email = email;  // Update the email if it's different
       }
-      updates.email = email;
     }
 
     // Handle password update (optional)
@@ -101,6 +107,7 @@ const updateAdminUser = async (req, res) => {
     return res.status(500).json({ message: 'Failed to update user profile', error: error.message });
   }
 };
+
 
 // Map role => table config
 const ROLE_MAP = {
